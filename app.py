@@ -1,30 +1,194 @@
-from flask import Flask, render_template, redirect, url_for
+import os
+from flask import Flask, render_template, jsonify
+from pathlib import Path
 import requests
+
 
 app = Flask(__name__)
 
 # Replace this with your actual Pico W IP
-PICO_IP = "http://192.168.50.35"
+MACRO_SERVER = "http://192.168.50.35:8888"
 
-# Define your macros
-MACROS = {
-    "Reinforce": "redeploy",
-    "Resupply": "resupply",
-    "SOS Beacon": "sos"
+STATIC_MACROS = {
+    "Reinforce": "Reinforce",
+    "Resupply": "Resupply"
 }
 
-@app.route("/")
+DYNAMIC_MACROS = {
+    "Orbital_Precision_Strike": "Orbital Precision Strike",
+    "Orbital_Gatling_Barrage": "Orbital Gatling Barrage",
+    "Orbital_Airburst_Strike": "Orbital Airburst Strike",
+    "Orbital_Napalm_Barrage": "Orbital Napalm Barrage",
+    "Orbital_120MM_HE_Barrage": "Orbital 120MM HE Barrage",
+    "Orbital_Walking_Barrage": "Orbital Walking Barrage",
+    "Orbital_380MM_HE_Barrage": "Orbital 380MM HE Barrage",
+    "Orbital_Railcannon_Strike": "Orbital Railcannon Strike",
+    "Orbital_Laser": "Orbital Laser",
+    "Orbital_EMS_Strike": "Orbital EMS Strike",
+    "Orbital_Gas_Strike": "Orbital Gas Strike",
+    "Orbital_Smoke_Strike": "Orbital Smoke Strike",
+    "Eagle_500KG_Bomb": "Eagle 500KG Bomb",
+    "Eagle_Strafing_Run": "Eagle Strafing Run",
+    "Eagle_110MM_Rocket_Pods": "Eagle 110MM Rocket Pods",
+    "Eagle_Airstrike": "Eagle Airstrike",
+    "Eagle_Cluster_Bomb": "Eagle Cluster Bomb",
+    "Eagle_Napalm_Airstrike": "Eagle Napalm Airstrike",
+    "Eagle_Smoke_Strike": "Eagle Smoke Strike",
+    "CQC-1_One_True_Flag": "CQC-1 One True Flag",
+    "MG-43_Machine_Gun": "MG-43 Machine Gun",
+    "M-105_Stalwart": "M-105 Stalwart",
+    "MG-206_Heavy_Machine_Gun": "MG-206 Heavy Machine Gun",
+    "RS-422_Railgun": "RS-422 Railgun",
+    "APW-1_Anti-Materiel_Rifle": "APW-1 Anti-Materiel Rifle",
+    "GL-21_Grenade_Launcher": "GL-21 Grenade Launcher",
+    "TX-14_Sterilizer": "TX-14 Sterilizer",
+    "FLAM-40_Flamethrower": "FLAM-40 Flamethrower",
+    "LAS-98_Laser_Cannon": "LAS-98 Laser Cannon",
+    "LAS-99_Quasar_Cannon": "LAS-99 Quasar Cannon",
+    "ARC-3_Arc_Thrower": "ARC-3 Arc Thrower",
+    "MLS-4X_Commando": "MLS-4X Commando",
+    "EAT-17_Expendable_Anti-Tank": "EAT-17 Expendable Anti-Tank",
+    "AC-8_Autocannon": "AC-8 Autocannon",
+    "RL-77_Airburst_Rocket_Launcher": "RL-77 Airburst Rocket Launcher",
+    "FAF-14_Spear_Launcher": "FAF-14 Spear Launcher",
+    "StA-X3_W.A.S.P._Launcher": "StA-X3 W.A.S.P. Launcher",
+    "GR-8_Recoilless_Rifle": "GR-8 Recoilless Rifle",
+    "SH-32_Shield_Generator_Pack": "SH-32 Shield Generator Pack",
+    "SH-51_Directional_Shield_Backpack": "SH-51 Directional Shield Backpack",
+    "SH-20_Ballistic_Shield_Backpack": "SH-20 Ballistic Shield Backpack",
+    "LIFT-860_Hover_Pack": "LIFT-860 Hover Pack",
+    "B-1_Supply_Pack": "B-1 Supply Pack",
+    "B-100_Portable_Hellbomb": "B-100 Portable Hellbomb",
+    "LIFT-850_Jump_Pack": "LIFT-850 Jump Pack",
+    "AX-AR-23_Guard_Dog": "AX-AR-23 Guard Dog",
+    "AX-LAS-5_Guard_Dog_Rover": "AX-LAS-5 Guard Dog Rover",
+    "AX-TX-13_Guard_Dog_Dog_Breath": "AX-TX-13 Guard Dog Dog Breath",
+    "M-102_Fast_Recon_Vehicle": "M-102 Fast Recon Vehicle",
+    "EXO-49_Emancipator_Exosuit": "EXO-49 Emancipator Exosuit",
+    "EXO-45_Patriot_Exosuit": "EXO-45 Patriot Exosuit",
+    "A-G-16_Gatling_Sentry": "A-G-16 Gatling Sentry",
+    "A-MG-43_Machine_Gun_Sentry": "A-MG-43 Machine Gun Sentry",
+    "E-FLAM-40_Flame_Sentry": "E-FLAM-40 Flame Sentry",
+    "A-MLS-4X_Rocket_Sentry": "A-MLS-4X Rocket Sentry",
+    "A-AC-8_Autocannon_Sentry": "A-AC-8 Autocannon Sentry",
+    "A-M-23_EMS_Mortar_Sentry": "A-M-23 EMS Mortar Sentry",
+    "A-M-12_Mortar_Sentry": "A-M-12 Mortar Sentry",
+    "FX-12_Shield_Generator_Relay": "FX-12 Shield Generator Relay",
+    "E-GL-21_Grenadier_Battlement": "E-GL-21 Grenadier Battlement",
+    "E-AT-12_Anti-Tank_Emplacement": "E-AT-12 Anti-Tank Emplacement",
+    "E-MG-101_HMG_Emplacement": "E-MG-101 HMG Emplacement",
+    "A-ARC-3_Tesla_Tower": "A-ARC-3 Tesla Tower",
+    "MD-17_Anti-Tank_Mines": "MD-17 Anti-Tank Mines",
+    "MD-8_Gas_Mines": "MD-8 Gas Mines",
+    "MD-6_Anti-Personnel_Minefield": "MD-6 Anti-Personnel Minefield",
+    "MD-14_Incendiary_Mines": "MD-14 Incendiary Mines",
+    "SOS_Beacon": "SOS Beacon",
+    "NUX-223_Hellbomb": "NUX-223 Hellbomb",
+    "SSSD_Delivery": "SSSD Delivery",
+    "Seismic_Probe": "Seismic Probe",
+    "Upload_Data": "Upload Data",
+    "Eagle_Rearm": "Eagle Rearm"
+}
+
+MACRO_IMAGES = {
+    "Orbital_Precision_Strike": "Orbital_Precision_Strike.png",
+    "Orbital_Gatling_Barrage": "Orbital_Gatling_Barrage.png",
+    "Orbital_Airburst_Strike": "Orbital_Airburst_Strike.png",
+    "Orbital_Napalm_Barrage": "Orbital_Napalm_Barrage.png",
+    "Orbital_120MM_HE_Barrage": "Orbital_120MM_HE_Barrage.png",
+    "Orbital_Walking_Barrage": "Orbital_Walking_Barrage.png",
+    "Orbital_380MM_HE_Barrage": "Orbital_380MM_HE_Barrage.png",
+    "Orbital_Railcannon_Strike": "Orbital_Railcannon_Strike.png",
+    "Orbital_Laser": "Orbital_Laser.png",
+    "Orbital_EMS_Strike": "Orbital_EMS_Strike.png",
+    "Orbital_Gas_Strike": "Orbital_Gas_Strike.png",
+    "Orbital_Smoke_Strike": "Orbital_Smoke_Strike.png",
+    "Eagle_500KG_Bomb": "Eagle_500KG_Bomb.png",
+    "Eagle_Strafing_Run": "Eagle_Strafing_Run.png",
+    "Eagle_110MM_Rocket_Pods": "Eagle_110MM_Rocket_Pods.png",
+    "Eagle_Airstrike": "Eagle_Airstrike.png",
+    "Eagle_Cluster_Bomb": "Eagle_Cluster_Bomb.png",
+    "Eagle_Napalm_Airstrike": "Eagle_Napalm_Airstrike.png",
+    "Eagle_Smoke_Strike": "Eagle_Smoke_Strike.png",
+    "CQC-1_One_True_Flag": "CQC-1_One_True_Flag.png",
+    "MG-43_Machine_Gun": "MG-43_Machine_Gun.png",
+    "M-105_Stalwart": "M-105_Stalwart.png",
+    "MG-206_Heavy_Machine_Gun": "MG-206_Heavy_Machine_Gun.png",
+    "RS-422_Railgun": "RS-422_Railgun.png",
+    "APW-1_Anti-Materiel_Rifle": "APW-1_Anti-Materiel_Rifle.png",
+    "GL-21_Grenade_Launcher": "GL-21_Grenade_Launcher.png",
+    "TX-14_Sterilizer": "TX-14_Sterilizer.png",
+    "FLAM-40_Flamethrower": "FLAM-40_Flamethrower.png",
+    "LAS-98_Laser_Cannon": "LAS-98_Laser_Cannon.png",
+    "LAS-99_Quasar_Cannon": "LAS-99_Quasar_Cannon.png",
+    "ARC-3_Arc_Thrower": "ARC-3_Arc_Thrower.png",
+    "MLS-4X_Commando": "MLS-4X_Commando.png",
+    "EAT-17_Expendable_Anti-Tank": "EAT-17_Expendable_Anti-Tank.png",
+    "AC-8_Autocannon": "AC-8_Autocannon.png",
+    "RL-77_Airburst_Rocket_Launcher": "RL-77_Airburst_Rocket_Launcher.png",
+    "FAF-14_Spear_Launcher": "FAF-14_Spear_Launcher.png",
+    "StA-X3_W.A.S.P._Launcher": "StA-X3_W.A.S.P._Launcher.png",
+    "GR-8_Recoilless_Rifle": "GR-8_Recoilless_Rifle.png",
+    "SH-32_Shield_Generator_Pack": "SH-32_Shield_Generator_Pack.png",
+    "SH-51_Directional_Shield_Backpack": "SH-51_Directional_Shield_Backpack.png",
+    "SH-20_Ballistic_Shield_Backpack": "SH-20_Ballistic_Shield_Backpack.png",
+    "LIFT-860_Hover_Pack": "LIFT-860_Hover_Pack.png",
+    "B-1_Supply_Pack": "B-1_Supply_Pack.png",
+    "B-100_Portable_Hellbomb": "B-100_Portable_Hellbomb.png",
+    "LIFT-850_Jump_Pack": "LIFT-850_Jump_Pack.png",
+    "AX-AR-23_Guard_Dog": "AX_AR-23_Guard_Dog.png",
+    "AX-LAS-5_Guard_Dog_Rover": "AX_LAS-5_Guard_Dog_Rover.png",
+    "AX-TX-13_Guard_Dog_Dog_Breath": "AX_TX-13_Guard_Dog_Dog_Breath.png",
+    "M-102_Fast_Recon_Vehicle": "M-102_Fast_Recon_Vehicle.png",
+    "EXO-49_Emancipator_Exosuit": "EXO-49_Emancipator_Exosuit.png",
+    "EXO-45_Patriot_Exosuit": "EXO-45_Patriot_Exosuit.png",
+    "A-G-16_Gatling_Sentry": "A_G-16_Gatling_Sentry.png",
+    "A-MG-43_Machine_Gun_Sentry": "A_MG-43_Machine_Gun_Sentry.png",
+    "E-FLAM-40_Flame_Sentry": "E_FLAM-40_Flame_Sentry.png",
+    "A-MLS-4X_Rocket_Sentry": "A_MLS-4X_Rocket_Sentry.png",
+    "A-AC-8_Autocannon_Sentry": "A_AC-8_Autocannon_Sentry.png",
+    "A-M-23_EMS_Mortar_Sentry": "A_M-23_EMS_Mortar_Sentry.png",
+    "A-M-12_Mortar_Sentry": "A_M-12_Mortar_Sentry.png",
+    "FX-12_Shield_Generator_Relay": "FX-12_Shield_Generator_Relay.png",
+    "E-GL-21_Grenadier_Battlement": "E_GL-21_Grenadier_Battlement.png",
+    "E-AT-12_Anti-Tank_Emplacement": "E_AT-12_Anti-Tank_Emplacement.png",
+    "E-MG-101_HMG_Emplacement": "E_MG-101_HMG_Emplacement.png",
+    "A-ARC-3_Tesla_Tower": "A_ARC-3_Tesla_Tower.png",
+    "MD-17_Anti-Tank_Mines": "MD-17_Anti-Tank_Mines.png",
+    "MD-8_Gas_Mines": "MD-8_Gas_Mines.png",
+    "MD-6_Anti-Personnel_Minefield": "MD-6_Anti-Personnel_Minefield.png",
+    "MD-14_Incendiary_Mines": "MD-14_Incendiary_Mines.png",
+    "NUX-223_Hellbomb": "NUX-223_Hellbomb.png",
+    "SSSD_Delivery": "SSSD_Delivery.png",
+    "Seismic_Probe": "Seismic_Probe.png",
+    "Upload_Data": "Upload_Data.png",
+    "Eagle_Rearm": "Eagle_Rearm.png",
+    "Reinforce": "redeploy.png",
+    "Resupply": "resupply.png",
+    "SOS_Beacon": "sos.png"
+}
+
+@app.route('/')
 def index():
-    return render_template("index.html", macros=MACROS)
+    image_dir = Path(app.static_folder) / "images"
+    existing_images = [f.name for f in image_dir.glob("*.png")]
+    return render_template(
+        'index.html',
+        static_macros=STATIC_MACROS,
+        dynamic_macros=DYNAMIC_MACROS,
+        macro_images=MACRO_IMAGES,
+        image_files=existing_images
+    )
 
 @app.route("/trigger/<macro>")
 def trigger_macro(macro):
     try:
-        response = requests.get(f"{PICO_IP}/{macro}", timeout=1)
-        print(f"Triggered: {macro} → {response.status_code}")
-    except requests.RequestException as e:
-        print(f"Error triggering {macro}: {e}")
-    return redirect(url_for("index"))
-
+        response = requests.get(f"{MACRO_SERVER}/{macro}", timeout=1)
+        response.raise_for_status()  # Will raise HTTPError for 4xx/5xx
+        return jsonify({"status": "success", "macro": macro})
+    except requests.exceptions.RequestException as e:
+        print(f"Error triggering macro '{macro}': {e}")
+        return jsonify({"status": "error", "macro": macro, "message": str(e)}), 500
+    
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8888)

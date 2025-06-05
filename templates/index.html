@@ -1,18 +1,113 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css" />
+    <meta charset="UTF-8" />
     <title>Macro Panel</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-    <h1>Macro Panel</h1>
-    <div class="grid">
-        {% for name, endpoint in macros.items() %}
-        <form action="{{ url_for('trigger_macro', macro=endpoint) }}" method="get">
-            <button type="submit">{{ name }}</button>
-        </form>
-        {% endfor %}
+  </head>
+  <body>
+    <div style="text-align: center; padding: 10px">
+      <button
+        onclick="toggleRemoveMode()"
+        id="removeBtn"
+        style="padding: 8px 16px; font-size: 1rem">
+        Remove Mode: OFF
+      </button>
     </div>
-</body>
+
+    <div class="macro-grid" id="macroGrid">
+      <!-- Static macros -->
+      {% for macro, label in static_macros.items() %}
+      <div class="macro-button">
+        {% set image = macro_images.get(macro) %}
+        {% if image and image in image_files %}
+        <button onclick="triggerMacro('{{ macro }}')">
+          <img src="{{ url_for('static', filename='images/' + image) }}" alt="{{ label }}" />
+        </button>
+        {% else %}
+        <button onclick="triggerMacro('{{ macro }}')">{{ label }}</button>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <!-- Add dynamic macro -->
+      <div class="add-macro">
+        <select id="macroSelect" onchange="addMacro()">
+          <option value="">-- Add Macro --</option>
+          {% for name, label in dynamic_macros.items() %}
+          <option value="{{ name }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <script>
+      const MAX_DYNAMIC = 8;
+      const added = new Set();
+      let removeMode = false;
+
+      const macroImages = {{ macro_images | tojson }};
+      const imageFiles = {{ image_files | tojson }};
+      const dynamicLabels = {{ dynamic_macros | tojson }};
+
+      function toggleRemoveMode() {
+        removeMode = !removeMode;
+        const btn = document.getElementById("removeBtn");
+        btn.innerText = `Remove Mode: ${removeMode ? "ON" : "OFF"}`;
+        btn.style.backgroundColor = removeMode ? "darkred" : "";
+      }
+
+      function triggerMacro(name) {
+        fetch(`/trigger/${name}`)
+          .then(res => res.json())
+          .then(data => console.log(`Triggered: ${name}`))
+          .catch(err => console.error("Trigger failed", err));
+      }
+
+      function addMacro() {
+        const select = document.getElementById("macroSelect");
+        const name = select.value;
+        if (!name || added.has(name)) return;
+
+        const label = dynamicLabels[name];
+        const image = macroImages[name];
+        const hasImage = image && imageFiles.includes(image);
+
+        const grid = document.getElementById("macroGrid");
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "macro-button";
+
+        const button = document.createElement("button");
+        button.onclick = () => {
+          if (removeMode) {
+            grid.removeChild(wrapper);
+            added.delete(name);
+            select.disabled = false;
+          } else {
+            triggerMacro(name);
+          }
+        };
+
+        if (hasImage) {
+          const img = document.createElement("img");
+          img.src = `/static/images/${image}`;
+          img.alt = label;
+          button.appendChild(img);
+        } else {
+          button.innerText = label;
+        }
+
+        wrapper.appendChild(button);
+        grid.insertBefore(wrapper, grid.lastElementChild); // Before the select box
+
+        added.add(name);
+        if (added.size >= MAX_DYNAMIC) {
+          select.disabled = true;
+        }
+
+        select.selectedIndex = 0;
+      }
+    </script>
+  </body>
 </html>
