@@ -1,13 +1,14 @@
 import os
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, send_from_directory, request  # type: ignore
+from flask_cors import CORS # type: ignore
 from pathlib import Path
-import requests
-
+import requests # type: ignore
 
 app = Flask(__name__)
+CORS(app)
 
 # Replace this with your actual Pico W IP
-MACRO_SERVER = "http://192.168.50.35:8888"
+# MACRO_SERVER = "http://192.168.50.35:8888"
 
 STATIC_MACROS = {
     "Reinforce": "Reinforce",
@@ -60,24 +61,24 @@ DYNAMIC_MACROS = {
     "B-1_Supply_Pack": "B-1 Supply Pack",
     "B-100_Portable_Hellbomb": "B-100 Portable Hellbomb",
     "LIFT-850_Jump_Pack": "LIFT-850 Jump Pack",
-    "AX-AR-23_Guard_Dog": "AX-AR-23 Guard Dog",
-    "AX-LAS-5_Guard_Dog_Rover": "AX-LAS-5 Guard Dog Rover",
-    "AX-TX-13_Guard_Dog_Dog_Breath": "AX-TX-13 Guard Dog Dog Breath",
+    "AX-AR-23_Guard_Dog": "AX/AR-23 Guard Dog",
+    "AX-LAS-5_Guard_Dog_Rover": "AX/LAS-5 Guard Dog Rover",
+    "AX-TX-13_Guard_Dog_Dog_Breath": "AX/TX-13 Guard Dog Dog Breath",
     "M-102_Fast_Recon_Vehicle": "M-102 Fast Recon Vehicle",
     "EXO-49_Emancipator_Exosuit": "EXO-49 Emancipator Exosuit",
     "EXO-45_Patriot_Exosuit": "EXO-45 Patriot Exosuit",
-    "A-G-16_Gatling_Sentry": "A-G-16 Gatling Sentry",
-    "A-MG-43_Machine_Gun_Sentry": "A-MG-43 Machine Gun Sentry",
-    "E-FLAM-40_Flame_Sentry": "E-FLAM-40 Flame Sentry",
-    "A-MLS-4X_Rocket_Sentry": "A-MLS-4X Rocket Sentry",
-    "A-AC-8_Autocannon_Sentry": "A-AC-8 Autocannon Sentry",
-    "A-M-23_EMS_Mortar_Sentry": "A-M-23 EMS Mortar Sentry",
-    "A-M-12_Mortar_Sentry": "A-M-12 Mortar Sentry",
+    "A-G-16_Gatling_Sentry": "A/G-16 Gatling Sentry",
+    "A-MG-43_Machine_Gun_Sentry": "A/MG-43 Machine Gun Sentry",
+    "E-FLAM-40_Flame_Sentry": "E/FLAM-40 Flame Sentry",
+    "A-MLS-4X_Rocket_Sentry": "A/MLS-4X Rocket Sentry",
+    "A-AC-8_Autocannon_Sentry": "A/AC-8 Autocannon Sentry",
+    "A-M-23_EMS_Mortar_Sentry": "A/M-23 EMS Mortar Sentry",
+    "A-M-12_Mortar_Sentry": "A/M-12 Mortar Sentry",
     "FX-12_Shield_Generator_Relay": "FX-12 Shield Generator Relay",
-    "E-GL-21_Grenadier_Battlement": "E-GL-21 Grenadier Battlement",
-    "E-AT-12_Anti-Tank_Emplacement": "E-AT-12 Anti-Tank Emplacement",
-    "E-MG-101_HMG_Emplacement": "E-MG-101 HMG Emplacement",
-    "A-ARC-3_Tesla_Tower": "A-ARC-3 Tesla Tower",
+    "E-GL-21_Grenadier_Battlement": "E/GL-21 Grenadier Battlement",
+    "E-AT-12_Anti-Tank_Emplacement": "E/AT-12 Anti-Tank Emplacement",
+    "E-MG-101_HMG_Emplacement": "E/MG-101 HMG Emplacement",
+    "A-ARC-3_Tesla_Tower": "A/ARC-3 Tesla Tower",
     "MD-17_Anti-Tank_Mines": "MD-17 Anti-Tank Mines",
     "MD-8_Gas_Mines": "MD-8 Gas Mines",
     "MD-6_Anti-Personnel_Minefield": "MD-6 Anti-Personnel Minefield",
@@ -168,6 +169,89 @@ MACRO_IMAGES = {
     "SOS_Beacon": "sos.png"
 }
 
+# Border colors
+MACRO_STYLES = {
+    "Orbital_Precision_Strike": {"border": "red"},
+    "Orbital_Gatling_Barrage": {"border": "red"},
+    "Orbital_Airburst_Strike": {"border": "red"},
+    "Orbital_Napalm_Barrage": {"border": "red"},
+    "Orbital_120MM_HE_Barrage": {"border": "red"},
+    "Orbital_Walking_Barrage": {"border": "red"},
+    "Orbital_380MM_HE_Barrage": {"border": "red"},
+    "Orbital_Railcannon_Strike": {"border": "red"},
+    "Orbital_Laser": {"border": "red"},
+    "Orbital_EMS_Strike": {"border": "red"},
+    "Orbital_Gas_Strike": {"border": "red"},
+    "Orbital_Smoke_Strike": {"border": "red"},
+    "Eagle_500KG_Bomb": {"border": "red"},
+    "Eagle_Strafing_Run": {"border": "red"},
+    "Eagle_110MM_Rocket_Pods": {"border": "red"},
+    "Eagle_Airstrike": {"border": "red"},
+    "Eagle_Cluster_Bomb": {"border": "red"},
+    "Eagle_Napalm_Airstrike": {"border": "red"},
+    "Eagle_Smoke_Strike": {"border": "red"},
+    "CQC-1_One_True_Flag": {"border": "blue"},
+    "MG-43_Machine_Gun": {"border": "blue"},
+    "M-105_Stalwart": {"border": "blue"},
+    "MG-206_Heavy_Machine_Gun": {"border": "blue"},
+    "RS-422_Railgun": {"border": "blue"},
+    "APW-1_Anti-Materiel_Rifle": {"border": "blue"},
+    "GL-21_Grenade_Launcher": {"border": "blue"},
+    "TX-14_Sterilizer": {"border": "blue"},
+    "FLAM-40_Flamethrower": {"border": "blue"},
+    "LAS-98_Laser_Cannon": {"border": "blue"},
+    "LAS-99_Quasar_Cannon": {"border": "blue"},
+    "ARC-3_Arc_Thrower": {"border": "blue"},
+    "MLS-4X_Commando": {"border": "blue"},
+    "EAT-17_Expendable_Anti-Tank": {"border": "blue"},
+    "AC-8_Autocannon": {"border": "blue"},
+    "RL-77_Airburst_Rocket_Launcher": {"border": "blue"},
+    "FAF-14_Spear_Launcher": {"border": "blue"},
+    "StA-X3_W.A.S.P._Launcher": {"border": "blue"},
+    "GR-8_Recoilless_Rifle": {"border": "blue"},
+    "SH-32_Shield_Generator_Pack": {"border": "blue"},
+    "SH-51_Directional_Shield_Backpack": {"border": "blue"},
+    "SH-20_Ballistic_Shield_Backpack": {"border": "blue"},
+    "LIFT-860_Hover_Pack": {"border": "blue"},
+    "B-1_Supply_Pack": {"border": "blue"},
+    "B-100_Portable_Hellbomb": {"border": "blue"},
+    "LIFT-850_Jump_Pack": {"border": "blue"},
+    "AX-AR-23_Guard_Dog": {"border": "blue"},
+    "AX-LAS-5_Guard_Dog_Rover": {"border": "blue"},
+    "AX-TX-13_Guard_Dog_Dog_Breath": {"border": "blue"},
+    "M-102_Fast_Recon_Vehicle": {"border": "blue"},
+    "EXO-49_Emancipator_Exosuit": {"border": "blue"},
+    "EXO-45_Patriot_Exosuit": {"border": "blue"},
+    "A-G-16_Gatling_Sentry": {"border": "green"},
+    "A-MG-43_Machine_Gun_Sentry": {"border": "green"},
+    "E-FLAM-40_Flame_Sentry": {"border": "green"},
+    "A-MLS-4X_Rocket_Sentry": {"border": "green"},
+    "A-AC-8_Autocannon_Sentry": {"border": "green"},
+    "A-M-23_EMS_Mortar_Sentry": {"border": "green"},
+    "A-M-12_Mortar_Sentry": {"border": "green"},
+    "FX-12_Shield_Generator_Relay": {"border": "green"},
+    "E-GL-21_Grenadier_Battlement": {"border": "green"},
+    "E-AT-12_Anti-Tank_Emplacement": {"border": "green"},
+    "E-MG-101_HMG_Emplacement": {"border": "green"},
+    "A-ARC-3_Tesla_Tower": {"border": "green"},
+    "MD-17_Anti-Tank_Mines": {"border": "green"},
+    "MD-8_Gas_Mines": {"border": "green"},
+    "MD-6_Anti-Personnel_Minefield": {"border": "green"},
+    "MD-14_Incendiary_Mines": {"border": "green"},
+    "Reinforce": {"border": "yellow"},
+    "SOS_Beacon": {"border": "yellow"},
+    "Resupply": {"border": "yellow"},
+    "NUX-223_Hellbomb": {"border": "yellow"},
+    "SSSD_Delivery": {"border": "yellow"},
+    "Seismic_Probe": {"border": "yellow"},
+    "Upload_Data": {"border": "yellow"},
+    "Eagle_Rearm": {"border": "yellow"},
+}
+
+@app.route('/static/manifest.json')
+def manifest():
+    return send_from_directory(app.static_folder, 'manifest.json', mimetype='application/manifest+json')
+
 @app.route('/')
 def index():
     image_dir = Path(app.static_folder) / "images"
@@ -177,14 +261,27 @@ def index():
         static_macros=STATIC_MACROS,
         dynamic_macros=DYNAMIC_MACROS,
         macro_images=MACRO_IMAGES,
+        macro_styles=MACRO_STYLES,
         image_files=existing_images
     )
 
 @app.route("/trigger/<macro>")
 def trigger_macro(macro):
+    selected_user = request.args.get("user", "user1")
+    server_map = {
+        "user1": "http://192.168.50.34:8888",
+        "user2": "http://192.168.50.35:8888"
+    }
+    target_server = server_map.get(selected_user)
+
+    if not target_server:
+        return jsonify({"error": "Invalid user"}), 400
+    
+    print(f"Triggering macro '{macro}' for user '{selected_user}' → {target_server}")
+
     try:
-        response = requests.get(f"{MACRO_SERVER}/{macro}", timeout=1)
-        response.raise_for_status()  # Will raise HTTPError for 4xx/5xx
+        response = requests.get(f"{target_server}/{macro}", timeout=1)
+        response.raise_for_status()
         return jsonify({"status": "success", "macro": macro})
     except requests.exceptions.RequestException as e:
         print(f"Error triggering macro '{macro}': {e}")

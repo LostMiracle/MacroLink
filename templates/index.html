@@ -1,113 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/static/manifest.json" />
+
+    <!-- Theme color for Android -->
+    <meta name="theme-color" content="#000000" />
+
+    <!-- iOS specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Macro Panel" />
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png" />
     <link rel="stylesheet" type="text/css" href="/static/styles.css" />
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Macro Panel</title>
   </head>
+
   <body>
-    <div style="text-align: center; padding: 10px">
-      <button
-        onclick="toggleRemoveMode()"
-        id="removeBtn"
-        style="padding: 8px 16px; font-size: 1rem">
-        Remove Mode: OFF
-      </button>
-    </div>
-
-    <div class="macro-grid" id="macroGrid">
-      <!-- Static macros -->
-      {% for macro, label in static_macros.items() %}
-      <div class="macro-button">
-        {% set image = macro_images.get(macro) %}
-        {% if image and image in image_files %}
-        <button onclick="triggerMacro('{{ macro }}')">
-          <img src="{{ url_for('static', filename='images/' + image) }}" alt="{{ label }}" />
-        </button>
-        {% else %}
-        <button onclick="triggerMacro('{{ macro }}')">{{ label }}</button>
-        {% endif %}
-      </div>
-      {% endfor %}
-
-      <!-- Add dynamic macro -->
-      <div class="add-macro">
-        <select id="macroSelect" onchange="addMacro()">
-          <option value="">-- Add Macro --</option>
-          {% for name, label in dynamic_macros.items() %}
-          <option value="{{ name }}">{{ label }}</option>
+    <div class="controls">
+      <div class="dropdown-container">
+        <div class="dropdown-selected" onclick="toggleDropdown()">
+          -- Add Macro --
+        </div>
+        <div class="dropdown-list" id="macroDropdown">
+          {% for macro, label in dynamic_macros.items() %} {% set image =
+          macro_images[macro] %} {% set style = macro_styles.get(macro) %}
+          <div class="dropdown-item" onclick="selectMacro('{{ macro }}')">
+            <img
+              src="{{ url_for('static', filename='images/' + image) }}"
+              alt="{{ label }}"
+              {%
+              if
+              style
+              and
+              style.border
+              %}
+              style="border: 1px solid {{ style.border }}"
+              {%
+              endif
+              %} />
+            <span>{{ label }}</span>
+          </div>
           {% endfor %}
-        </select>
+        </div>
+      </div>
+      <select id="userSelect" onchange="updateServer(this)">
+        <option value="user1" data-color="greenyellow">Helldiver Green</option>
+        <option value="user2" data-color="lightskyblue">Helldiver Blue</option>
+      </select>
+      <!-- <span>MacroLink v1.0.0</span> -->
+      <div class="remove-mode" onclick="toggleRemoveMode()" id="removeBtn">
+        Remove Mode: OFF
       </div>
     </div>
 
+    <div class="macro-grid-container">
+      <div class="macro-grid" id="macroGrid">
+        {% for macro, label in static_macros.items() %} {% set image =
+        macro_images.get(macro) %} {% set style = macro_styles.get(macro) %}
+        <div
+          class="macro-button"
+          {%
+          if
+          style
+          and
+          style.border
+          %}
+          style="border: 2px solid {{ style.border }}"
+          {%
+          endif
+          %}>
+          {% if image and image in image_files %}
+          <button onclick="triggerMacro('{{ macro }}')">
+            <img
+              src="{{ url_for('static', filename='images/' + image) }}"
+              alt="{{ label }}" />
+          </button>
+          {% else %}
+          <button onclick="triggerMacro('{{ macro }}')">{{ label }}</button>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="connection">
+      <span>> ::</span> Remote Command<span>:</span> Super Destroyer // SIGNAL LOCKED
+    </div>
+    <div class="stratagem">
+      <span>::</span> STRATAGEM ARRAY STANDBY <span>::</span> CMD_QUEUE: IDLE //
+      READY FOR DEPLOYMENT
+    </div>
+    <div class="background-layer grid"></div>
+    <div class="background-layer logo"></div>
+    <div class="particles" id="tsparticles"></div>
+    <audio
+      id="macroSound"
+      src="/static/sounds/console-click.mp3"
+      preload="auto"></audio>
+    <audio
+      id="macroMenuSound"
+      src="/static/sounds/menu-open.wav"
+      preload="auto"></audio>
+    <audio
+      id="macroAddSound"
+      src="/static/sounds/macro-add.mp3"
+      preload="auto"></audio>
+    <audio
+      id="macroRemoveSound"
+      src="/static/sounds/remove-macro.mp3"
+      preload="auto"></audio>
+    <audio
+      id="macroMaxSound"
+      src="/static/sounds/error.mp3"
+      preload="auto"></audio>
+    <audio
+      id="removeToggleSound"
+      src="/static/sounds/remove-mode.mp3"
+      preload="auto"></audio>
+    <audio
+      id="loginSound"
+      src="/static/sounds/login.mp3"
+      preload="auto"></audio>
     <script>
-      const MAX_DYNAMIC = 8;
-      const added = new Set();
-      let removeMode = false;
+        // @ts-nocheck
+        const macroStyles = {{ macro_styles | tojson }};
 
-      const macroImages = {{ macro_images | tojson }};
-      const imageFiles = {{ image_files | tojson }};
-      const dynamicLabels = {{ dynamic_macros | tojson }};
+        const MAX_DYNAMIC = 10;
+        const added = new Set();
+        let removeMode = false;
 
-      function toggleRemoveMode() {
-        removeMode = !removeMode;
-        const btn = document.getElementById("removeBtn");
-        btn.innerText = `Remove Mode: ${removeMode ? "ON" : "OFF"}`;
-        btn.style.backgroundColor = removeMode ? "darkred" : "";
-      }
+        const macroImages = {{ macro_images | tojson }};
+        const imageFiles = {{ image_files | tojson }};
+        const dynamicLabels = {{ dynamic_macros | tojson }};
 
-      function triggerMacro(name) {
-        fetch(`/trigger/${name}`)
-          .then(res => res.json())
-          .then(data => console.log(`Triggered: ${name}`))
-          .catch(err => console.error("Trigger failed", err));
-      }
+        function updateServer(selectEl) {
+          const user = selectEl.value;
+          localStorage.setItem("selectedUser", user);
 
-      function addMacro() {
-        const select = document.getElementById("macroSelect");
-        const name = select.value;
-        if (!name || added.has(name)) return;
+          const selectedOption = selectEl.options[selectEl.selectedIndex];
+          const color = selectedOption.dataset.color;
+          selectEl.style.color = color;
 
-        const label = dynamicLabels[name];
-        const image = macroImages[name];
-        const hasImage = image && imageFiles.includes(image);
+          const loginSound = document.getElementById("loginSound");
+          if (loginSound) {
+            loginSound.currentTime = 0;
+            loginSound.play().catch(() => {});
+          }
 
-        const grid = document.getElementById("macroGrid");
+          console.log("Switched to user:", selectEl.value);
+        }
 
-        const wrapper = document.createElement("div");
-        wrapper.className = "macro-button";
+        function toggleRemoveMode() {
+          removeMode = !removeMode;
+          const btn = document.getElementById("removeBtn");
+          btn.innerText = `Remove Mode: ${removeMode ? "ON" : "OFF"}`;
+          btn.style.backgroundColor = removeMode ? "darkred" : "";
+          const toggleSound = document.getElementById("removeToggleSound");
+            if (toggleSound) {
+              toggleSound.currentTime = 0;
+              toggleSound.play().catch(e => {});
+            }
+        }
 
-        const button = document.createElement("button");
-        button.onclick = () => {
-          if (removeMode) {
-            grid.removeChild(wrapper);
-            added.delete(name);
-            select.disabled = false;
+        function triggerMacro(name) {
+          const user = document.getElementById("userSelect").value;
+          fetch(`/trigger/${name}?user=${user}`) // ✅ pass user as query param
+            .then(res => res.json())
+            .then(data => {
+              console.log(`Triggered: ${name}`);
+            })
+            .catch(err => console.error("Trigger failed", err));
+            const sound = document.getElementById("macroSound");
+              if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => {});
+              }
+        }
+
+        function selectMacro(label) {
+          const name = label;
+          const macroGrid = document.getElementById("macroGrid");
+          if (!label || added.has(label) || macroGrid.children.length >= MAX_DYNAMIC) return;
+          const labelText = dynamicLabels[name];
+          const image = macroImages[name];
+          const hasImage = image && imageFiles.includes(image);
+
+          const wrapper = document.createElement("div");
+          wrapper.className = "macro-button";
+          updateGridOffset();
+
+          const sound = document.getElementById("macroAddSound");
+            if (sound) {
+              sound.currentTime = 0; // rewind to start
+              sound.play().catch(e => {}); // suppress autoplay errors
+              console.log("Adding macro sound played.");
+            }
+
+          // 🟨 Apply border color if style exists
+          if (macroStyles[name] && macroStyles[name].border) {
+            wrapper.style.border = `2px solid ${macroStyles[name].border}`;
+          }
+
+          const button = document.createElement("button");
+          button.onclick = () => {
+            if (removeMode) {
+              macroGrid.removeChild(wrapper);
+              added.delete(name);
+              const sound = document.getElementById("macroRemoveSound");
+                if (sound) {
+                  sound.currentTime = 0; // rewind to start
+                  sound.play().catch(e => {}); // suppress autoplay errors
+                  console.log("Remove macro sound played.");
+                }
+              updateGridOffset();
+
+              // ✅ Re-enable dropdown when under max total
+              if (macroGrid.children.length < MAX_DYNAMIC) {
+                document.querySelector(".dropdown-selected").classList.remove("disabled");
+                document.querySelector(".dropdown-selected").innerText = "-- Add Macro --";
+              }
+            } else {
+              triggerMacro(name);
+            }
+          };
+
+          if (hasImage) {
+            const img = document.createElement("img");
+            img.src = `/static/images/${image}`;
+            img.alt = labelText;
+            button.appendChild(img);
           } else {
-            triggerMacro(name);
+            button.innerText = labelText;
+          }
+
+          wrapper.appendChild(button);
+          macroGrid.appendChild(wrapper);
+          added.add(name);
+
+          const dropdown = document.getElementById("macroDropdown");
+            dropdown.style.display = "none";
+
+            if (macroGrid.children.length >= MAX_DYNAMIC) {
+              document.querySelector(".dropdown-selected").classList.add("disabled");
+              document.querySelector(".dropdown-selected").innerText = "-- Max Reached --";
+            }
+        }
+        function toggleDropdown() {
+        const dropdownBtn = document.querySelector(".dropdown-selected");
+        const list = document.getElementById("macroDropdown");
+
+        // If disabled, play error sound and exit
+        if (dropdownBtn.classList.contains("disabled")) {
+          const errorSound = document.getElementById("macroMaxSound");
+          if (errorSound) {
+            errorSound.currentTime = 0;
+            errorSound.play().catch(e => {});
+            console.log("Max reached sound played.");
+          }
+          return;
+        }
+
+        // Only play menu sound if not disabled
+        const sound = document.getElementById("macroMenuSound");
+        if (sound) {
+          sound.currentTime = 0;
+          sound.play().catch(e => {});
+          console.log("Menu open sound played.");
+        }
+
+        if (added.size >= MAX_DYNAMIC) {
+          dropdownBtn.classList.add("disabled");
+          return;
+        } else {
+          dropdownBtn.classList.remove("disabled");
+        }
+
+        list.style.display = list.style.display === "grid" ? "none" : "grid";
+      }
+
+        window.onload = function () {
+          const macroGrid = document.getElementById("macroGrid");
+          const userSelect = document.getElementById("userSelect");
+
+          // Set previously selected user from localStorage
+          const storedUser = localStorage.getItem("selectedUser");
+          if (storedUser) {
+            userSelect.value = storedUser;
+
+            // Apply stored color to the top-level <select>
+            const selectedOption = userSelect.options[userSelect.selectedIndex];
+            const color = selectedOption.dataset.color;
+            userSelect.style.color = color;
+          }
+          if (macroGrid.children.length >= MAX_DYNAMIC) {
+            document.querySelector(".dropdown-selected").classList.add("disabled");
           }
         };
 
-        if (hasImage) {
-          const img = document.createElement("img");
-          img.src = `/static/images/${image}`;
-          img.alt = label;
-          button.appendChild(img);
-        } else {
-          button.innerText = label;
-        }
+        // Optional: Close dropdown when clicking outside
+        window.onclick = function (event) {
+          const dropdown = document.getElementById("macroDropdown");
+          if (!event.target.closest('.dropdown-container')) {
+            dropdown.style.display = "none";
+          }
+        };
+    </script>
+    <script>
+      function updateGridOffset() {
+        requestAnimationFrame(() => {
+          const grid = document.getElementById("macroGrid");
+          const container = document.querySelector(".macro-grid-container");
+          const children = Array.from(grid.children);
 
-        wrapper.appendChild(button);
-        grid.insertBefore(wrapper, grid.lastElementChild); // Before the select box
+          if (children.length === 0) {
+            container.classList.remove("align-center");
+            return;
+          }
 
-        added.add(name);
-        if (added.size >= MAX_DYNAMIC) {
-          select.disabled = true;
-        }
+          const firstTop = children[0].offsetTop;
+          const hasMultipleRows = children.some(
+            (child) => child.offsetTop !== firstTop
+          );
 
-        select.selectedIndex = 0;
+          if (hasMultipleRows) {
+            container.classList.add("align-center"); // Center when multiple rows
+          } else {
+            container.classList.remove("align-center"); // Top when only 1 row
+          }
+        });
       }
+    </script>
+    <script src="/static/js/min/tsparticles.bundle.min.js"></script>
+    <script>
+      (async () => {
+        await loadAll(tsParticles);
+
+        await tsParticles.load({
+          id: "tsparticles",
+          options: {
+            /* options */
+            fpsLimit: 30,
+            fullScreen: { enable: true, zIndex: -1 },
+            retina_detect: true,
+            particles: {
+              number: { value: 80 },
+              size: { value: 1 },
+              color: { value: "#ffffff" },
+              links: {
+                enable: true,
+                color: "#ffff9c",
+                distance: 110,
+                opacity: 0.3,
+                width: 1,
+              },
+              move: {
+                enable: true,
+                speed: 0.4,
+              },
+            },
+          },
+        });
+      })();
     </script>
   </body>
 </html>
