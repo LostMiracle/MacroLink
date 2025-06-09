@@ -38,11 +38,12 @@ body {
   align-items: flex-start;
   height: 100%;
   /* Or a fixed height if needed */
-  padding: 32px 42px;
+  padding: 31px 42px;
   z-index: 5;
 }
 .macro-grid-container.align-center {
   align-items: center;
+  padding: 0px 42px;
 }
 .macro-grid {
   display: grid;
@@ -128,13 +129,24 @@ body {
   grid-template-columns: repeat(3, 1fr);
   position: absolute;
   top: 60px;
-  background: #111;
-  border: 1px solid #333;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(25, 25, 25, 0.85);
   width: calc(100vw - 85px);
   z-index: 1000;
   max-height: calc(100vh - 85px);
   overflow-y: auto;
   left: 32px;
+}
+.dropdown-list .dropdown-item:nth-child(6n + 1),
+.dropdown-list .dropdown-item:nth-child(6n + 2),
+.dropdown-list .dropdown-item:nth-child(6n + 3) {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+.dropdown-list .dropdown-item:nth-child(6n + 4),
+.dropdown-list .dropdown-item:nth-child(6n + 5),
+.dropdown-list .dropdown-item:nth-child(6n + 6) {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 .dropdown-item {
   display: flex;
@@ -202,7 +214,7 @@ body {
   z-index: 2;
 }
 .connection {
-  margin-left: 32px;
+  margin-left: 16px;
   z-index: 3;
   position: absolute;
   bottom: 0;
@@ -214,7 +226,7 @@ body {
   font-size: 12px;
 }
 .stratagem {
-  margin-right: 32px;
+  margin-right: 16px;
   z-index: 3;
   position: absolute;
   bottom: 0;
@@ -229,4 +241,10 @@ body {
   color: #fff;
   text-shadow: 0 0 1px #fff, 0 0 4px #ffff9c, 0 0 8px #ffff9c, 0 0 18px #ffff9c;
   /* font-size: 2rem; */
+}
+.dashed-border {
+  border: 1px solid transparent;
+  border-width: 1px;
+  border-image: repeating-linear-gradient(45deg, #6a6a6a 0, #6a6a6a 5px, transparent 5px, transparent 10px);
+  border-image-slice: 1;
 }

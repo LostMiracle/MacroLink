@@ -26,7 +26,7 @@
         <div class="dropdown-selected" onclick="toggleDropdown()">
           -- Add Macro --
         </div>
-        <div class="dropdown-list" id="macroDropdown">
+        <div class="dropdown-list dashed-border" id="macroDropdown">
           {% for macro, label in dynamic_macros.items() %} {% set image =
           macro_images[macro] %} {% set style = macro_styles.get(macro) %}
           <div class="dropdown-item" onclick="selectMacro('{{ macro }}')">
