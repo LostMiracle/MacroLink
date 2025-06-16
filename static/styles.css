@@ -31,6 +31,15 @@ body {
   background-image: repeating-linear-gradient(315deg, #000, #000 5px, #4a4a4a 5px, #4A4A4D 8px);
   z-index: 10;
 }
+.controls select {
+  background-color: #222;
+  border: none;
+  color: white;
+  margin: 0;
+  padding: 10px;
+  font-family: 'Protomolecule', sans-serif;
+  text-transform: lowercase;
+}
 .macro-grid-container {
   display: flex;
   justify-content: center;
@@ -92,21 +101,13 @@ body {
 .macro-button button:hover {
   background-color: #333;
 }
-.controls select {
-  background-color: transparent;
-  border: none;
-  color: white;
-  margin: 0;
-  padding: 10px;
-  font-family: 'Protomolecule', sans-serif;
-  text-transform: lowercase;
-}
 .remove-mode {
   padding: 10px;
   font-size: 1rem;
   background: #222;
   width: 180px;
   min-width: 145px;
+  border: 1px solid #333;
 }
 .dropdown-container {
   position: relative;
@@ -119,6 +120,7 @@ body {
   padding: 10px;
   cursor: pointer;
   width: 180px;
+  border: 1px solid #333;
 }
 .dropdown-selected.disabled {
   opacity: 0.5;
@@ -247,4 +249,30 @@ body {
   border-width: 1px;
   border-image: repeating-linear-gradient(45deg, #6a6a6a 0, #6a6a6a 5px, transparent 5px, transparent 10px);
   border-image-slice: 1;
+}
+.user-profile {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  background-color: #222;
+  padding: 5px;
+  border: 1px solid #333;
+}
+.user-profile select {
+  padding: 0px;
+}
+.user-profile .profile-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+.user-profile .profile-container .modal-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+.user-profile .profile-container .modal-buttons button {
+  background-color: #222;
+  border: none;
+  padding: 6px;
 }

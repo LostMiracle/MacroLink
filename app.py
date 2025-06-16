@@ -1,7 +1,10 @@
-import os
+import json, os
 from flask import Flask, render_template, jsonify, send_from_directory, request  # type: ignore
 from flask_cors import CORS # type: ignore
 from pathlib import Path
+from threading import Lock
+profile_lock = Lock()
+# Lock for thread-safe profile access
 import requests # type: ignore
 
 app = Flask(__name__)
@@ -9,6 +12,8 @@ CORS(app)
 
 # Replace this with your actual Pico W IP
 # MACRO_SERVER = "http://192.168.50.35:8888"
+# Place this in app.py (top)
+PROFILE_PATH = os.path.join(os.path.dirname(__file__), 'profiles.json')
 
 STATIC_MACROS = {
     "Reinforce": "Reinforce",
@@ -42,6 +47,7 @@ DYNAMIC_MACROS = {
     "RS-422_Railgun": "RS-422 Railgun",
     "APW-1_Anti-Materiel_Rifle": "APW-1 Anti-Materiel Rifle",
     "GL-21_Grenade_Launcher": "GL-21 Grenade Launcher",
+    "GL-52_De-Escalator": "GL-52 De-Escalator",
     "TX-14_Sterilizer": "TX-14 Sterilizer",
     "FLAM-40_Flamethrower": "FLAM-40 Flamethrower",
     "LAS-98_Laser_Cannon": "LAS-98 Laser Cannon",
@@ -61,9 +67,10 @@ DYNAMIC_MACROS = {
     "B-1_Supply_Pack": "B-1 Supply Pack",
     "B-100_Portable_Hellbomb": "B-100 Portable Hellbomb",
     "LIFT-850_Jump_Pack": "LIFT-850 Jump Pack",
-    "AX-AR-23_Guard_Dog": "AX/AR-23 Guard Dog",
-    "AX-LAS-5_Guard_Dog_Rover": "AX/LAS-5 Guard Dog Rover",
-    "AX-TX-13_Guard_Dog_Dog_Breath": "AX/TX-13 Guard Dog Dog Breath",
+    "AX-AR-23_Guard_Dog": "AX/AR-23 'Guard Dog'",
+    "AX-LAS-5_Guard_Dog_Rover": "AX/LAS-5 'Guard Dog' Rover",
+    "AX-TX-13_Guard_Dog_Dog_Breath": "AX/TX-13 'Guard Dog' Dog Breath",
+    "AX_ARC-3_Guard_Dog_K9": "AX/ARC-3 'Guard Dog' K9",
     "M-102_Fast_Recon_Vehicle": "M-102 Fast Recon Vehicle",
     "EXO-49_Emancipator_Exosuit": "EXO-49 Emancipator Exosuit",
     "EXO-45_Patriot_Exosuit": "EXO-45 Patriot Exosuit",
@@ -88,7 +95,8 @@ DYNAMIC_MACROS = {
     "SSSD_Delivery": "SSSD Delivery",
     "Seismic_Probe": "Seismic Probe",
     "Upload_Data": "Upload Data",
-    "Eagle_Rearm": "Eagle Rearm"
+    "Eagle_Rearm": "Eagle Rearm",
+    "SEAF_Artillery": "SEAF Artillery"
 }
 
 MACRO_IMAGES = {
@@ -166,7 +174,10 @@ MACRO_IMAGES = {
     "Eagle_Rearm": "Eagle_Rearm.png",
     "Reinforce": "redeploy.png",
     "Resupply": "resupply.png",
-    "SOS_Beacon": "sos.png"
+    "SOS_Beacon": "sos.png",
+    "GL-52_De-Escalator": "GL-52_De-Escalator.png",
+    "AX_ARC-3_Guard_Dog_K9": "AX_ARC-3_Guard_Dog_K9.png",
+    "SEAF_Artillery": "SEAF_Artillery.png"
 }
 
 # Border colors
@@ -246,7 +257,21 @@ MACRO_STYLES = {
     "Seismic_Probe": {"border": "yellow"},
     "Upload_Data": {"border": "yellow"},
     "Eagle_Rearm": {"border": "yellow"},
+    "GL-52_De-Escalator": {"border": "blue"},
+    "AX_ARC-3_Guard_Dog_K9": {"border": "blue"},
+    "SEAF_Artillery": {"border": "yellow"}
 }
+
+def load_profiles():
+    if not os.path.exists(PROFILE_PATH):
+        return {}
+    with open(PROFILE_PATH, 'r') as f:
+        return json.load(f)
+
+
+def save_profiles(data):
+    with open(PROFILE_PATH, 'w') as f:
+        json.dump(data, f, indent=2)
 
 @app.route('/static/manifest.json')
 def manifest():
@@ -285,7 +310,94 @@ def trigger_macro(macro):
         return jsonify({"status": "success", "macro": macro})
     except requests.exceptions.RequestException as e:
         print(f"Error triggering macro '{macro}': {e}")
-        return jsonify({"status": "error", "macro": macro, "message": str(e)}), 500
+        return jsonify({"status": "error", "macro": macro, "message": 
+        str(e)}), 500
+    
+@app.route('/save_profile', methods=['POST'])
+def save_profile():
+    data = request.get_json()
+    user = data.get('user')
+    macros = data.get('macros')
+    profile = data.get('profile', 'default')  # allow profile name override
+
+    if not user or not isinstance(macros, list):
+        return jsonify({'error': 'Missing user or macros'}), 400
+
+    with profile_lock:
+        profiles = load_profiles()
+        profiles.setdefault(user, {})[profile] = macros
+        save_profiles(profiles)
+
+    return jsonify({'status': 'saved', 'user': user, 'profile': profile})
+
+
+@app.route('/list_profiles')
+def list_profiles():
+    user = request.args.get('user')
+    if not user:
+        return jsonify({'error': 'Missing user'}), 400
+    try:
+        with profile_lock:
+            profiles = load_profiles()
+            return jsonify({'profiles': list(profiles.get(user, {}).keys())})
+    except Exception as e:
+        print(f"[ERROR] list_profiles failed: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
+
+@app.route('/get_profile')
+def get_profile():
+    user = request.args.get('user')
+    profile = request.args.get('profile')
+    if not user or not profile:
+        return jsonify({'error': 'Missing user or profile'}), 400
+
+    with profile_lock:
+        profiles = load_profiles()
+        macros = profiles.get(user, {}).get(profile)
+        if macros is None:
+            return jsonify({'error': 'Profile not found'}), 404
+        return jsonify({'macros': macros})
+
+
+@app.route('/delete_profile', methods=['POST'])
+def delete_profile():
+    data = request.get_json()
+    user = data.get('user')
+    profile = data.get('profile')
+
+    if not user or not profile:
+        return jsonify({'error': 'Missing user or profile'}), 400
+
+    with profile_lock:
+        profiles = load_profiles()
+        if user in profiles and profile in profiles[user]:
+            del profiles[user][profile]
+            save_profiles(profiles)
+            return jsonify({'status': 'deleted'})
+        return jsonify({'error': 'Profile not found'}), 404
+    
+@app.route('/rename_profile', methods=['POST'])
+def rename_profile():
+    data = request.get_json()
+    user = data.get('user')
+    old_name = data.get('old_profile')
+    new_name = data.get('new_profile')
+
+    if not user or not old_name or not new_name:
+        return jsonify({'error': 'Missing parameters'}), 400
+
+    with profile_lock:
+        profiles = load_profiles()
+        user_profiles = profiles.get(user, {})
+        if old_name not in user_profiles:
+            return jsonify({'error': 'Old profile not found'}), 404
+        if new_name in user_profiles:
+            return jsonify({'error': 'New profile already exists'}), 400
+
+        user_profiles[new_name] = user_profiles.pop(old_name)
+        save_profiles(profiles)
+        return jsonify({'status': 'renamed', 'from': old_name, 'to': new_name})
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8888)

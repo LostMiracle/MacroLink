@@ -48,10 +48,99 @@
           {% endfor %}
         </div>
       </div>
-      <select id="userSelect" onchange="updateServer(this)">
-        <option value="user1" data-color="greenyellow">Helldiver Green</option>
-        <option value="user2" data-color="lightskyblue">Helldiver Blue</option>
-      </select>
+      <div class="user-profile">
+        <select id="userSelect" onchange="updateServer(this)">
+          <option value="user1" data-color="greenyellow">Helldiver Green</option>
+          <option value="user2" data-color="lightskyblue">Helldiver Blue</option>
+        </select>
+        <div class="profile-container">
+          <select id="profileSelect" onchange="loadProfileFromServer(this)">
+            <option disabled selected>-- Select Profile --</option>
+          </select>
+          <div class="modal-buttons">
+            <button onclick="openSaveModal()">💾</button>
+            <button onclick="openRenameModal()">✏️</button>
+            <button onclick="openDeleteModal()">🗑️</button>
+          </div>
+        </div>
+      </div>
+      <div
+        id="saveModal"
+        style="
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: #222;
+          padding: 20px;
+          border: 2px solid #888;
+          border-radius: 8px;
+          z-index: 1000;
+          color: white;
+        ">
+        <h3>Save Profile</h3>
+        <input
+          type="text"
+          id="saveInput"
+          placeholder="Enter profile name"
+          style="margin: 10px 0; padding: 5px" />
+        <div id="overwriteWarning" style="color: yellow; display: none">
+          This will overwrite an existing profile.
+        </div>
+        <div>
+          <button onclick="confirmSaveProfile()">✅ Confirm</button>
+          <button onclick="closeSaveModal()">❌ Cancel</button>
+        </div>
+      </div>
+      <div
+        id="renameModal"
+        style="
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: #222;
+          padding: 20px;
+          border: 2px solid #888;
+          border-radius: 8px;
+          z-index: 1000;
+          color: white;
+        ">
+        <h3>Rename Profile</h3>
+        <input
+          type="text"
+          id="renameInput"
+          placeholder="New profile name"
+          style="margin: 10px 0; padding: 5px" />
+        <div>
+          <button onclick="confirmRenameProfile()">✅ Confirm</button>
+          <button onclick="closeRenameModal()">❌ Cancel</button>
+        </div>
+      </div>
+      <div
+        id="deleteModal"
+        style="
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: #222;
+          padding: 20px;
+          border: 2px solid #888;
+          border-radius: 8px;
+          z-index: 1000;
+          color: white;
+        ">
+        <h3>Delete Profile</h3>
+        <p id="deleteMessage">Are you sure you want to delete this profile?</p>
+        <div>
+          <button onclick="confirmDeleteProfile()">✅ Confirm</button>
+          <button onclick="closeDeleteModal()">❌ Cancel</button>
+        </div>
+      </div>
       <!-- <span>MacroLink v1.0.0</span> -->
       <div class="remove-mode" onclick="toggleRemoveMode()" id="removeBtn">
         Remove Mode: OFF
@@ -88,7 +177,8 @@
       </div>
     </div>
     <div class="connection">
-      <span>> ::</span> Remote Command<span>:</span> Super Destroyer // SIGNAL LOCKED
+      <span>> ::</span> Remote Command<span>:</span> Super Destroyer // SIGNAL
+      LOCKED
     </div>
     <div class="stratagem">
       <span>::</span> STRATAGEM ARRAY STANDBY <span>::</span> CMD_QUEUE: IDLE //
@@ -126,188 +216,326 @@
       src="/static/sounds/login.mp3"
       preload="auto"></audio>
     <script>
-        // @ts-nocheck
-        const macroStyles = {{ macro_styles | tojson }};
+      // @ts-nocheck
+      const macroStyles = {{ macro_styles | tojson }};
+      const macroImages = {{ macro_images | tojson }};
+      const imageFiles = {{ image_files | tojson }};
+      const dynamicLabels = {{ dynamic_macros | tojson }};
 
-        const MAX_DYNAMIC = 10;
-        const added = new Set();
-        let removeMode = false;
+      const MAX_DYNAMIC = 10;
+      const added = new Set();
+      let removeMode = false;
+      let renameOldProfile = null;
 
-        const macroImages = {{ macro_images | tojson }};
-        const imageFiles = {{ image_files | tojson }};
-        const dynamicLabels = {{ dynamic_macros | tojson }};
+      function updateServer(selectEl) {
+        const user = selectEl.value;
+        localStorage.setItem("selectedUser", user);
+        const color = selectEl.options[selectEl.selectedIndex].dataset.color;
+        selectEl.style.color = color;
+        const loginSound = document.getElementById("loginSound");
+        if (loginSound) loginSound.play().catch(() => {});
+        console.log("Switched to user:", user);
+      }
 
-        function updateServer(selectEl) {
-          const user = selectEl.value;
-          localStorage.setItem("selectedUser", user);
+      function loadProfileList(user) {
+        fetch(`/list_profiles?user=${user}`)
+          .then(res => res.json())
+          .then(data => {
+            const select = document.getElementById("profileSelect");
+            select.innerHTML = '<option disabled selected>-- Select Profile --</option>';
+            data.profiles.forEach(profile => {
+              const opt = document.createElement("option");
+              opt.value = profile;
+              opt.textContent = profile;
+              select.appendChild(opt);
+            });
+            window.currentProfileList = data.profiles;
+          })
+          .catch(err => console.error("Profile list fetch failed", err));
+      }
 
-          const selectedOption = selectEl.options[selectEl.selectedIndex];
-          const color = selectedOption.dataset.color;
-          selectEl.style.color = color;
+      function loadProfileFromServer(selectEl) {
+        const profileName = selectEl.value;
+        const user = document.getElementById("userSelect").value;
+        fetch(`/get_profile?user=${user}&profile=${profileName}`)
+          .then(res => res.json())
+          .then(data => {
+            const macroGrid = document.getElementById("macroGrid");
+            macroGrid.innerHTML = "";
+            added.clear();
+            data.macros.forEach(selectMacro);
+          })
+          .catch(err => console.error("Profile load failed", err));
+      }
 
-          const loginSound = document.getElementById("loginSound");
-          if (loginSound) {
-            loginSound.currentTime = 0;
-            loginSound.play().catch(() => {});
-          }
+      function openDeleteModal() {
+        const selectEl = document.getElementById("profileSelect");
+        const profileName = selectEl.value;
+        if (!profileName || profileName === "-- Select Profile --") return alert("Select a profile to delete.");
+        document.getElementById("deleteMessage").textContent = `Delete profile '${profileName}'?`;
+        document.getElementById("deleteModal").style.display = "block";
+      }
 
-          console.log("Switched to user:", selectEl.value);
+      function closeDeleteModal() {
+        document.getElementById("deleteModal").style.display = "none";
+      }
+
+      function confirmDeleteProfile() {
+        const selectEl = document.getElementById("profileSelect");
+        const profileName = selectEl.value;
+        const user = document.getElementById("userSelect").value;
+        fetch("/delete_profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user, profile: profileName })
+        })
+          .then(res => res.json())
+          .then(() => {
+            alert("Profile deleted.");
+            loadProfileList(user);
+            closeDeleteModal();
+          })
+          .catch(err => {
+            console.error("Failed to delete profile", err);
+            alert("Error deleting profile.");
+            closeDeleteModal();
+          });
+      }
+
+      function openSaveModal() {
+        document.getElementById("saveInput").value = "";
+        document.getElementById("overwriteWarning").style.display = "none";
+        document.getElementById("saveModal").style.display = "block";
+        document.getElementById("saveInput").focus();
+      }
+
+      function closeSaveModal() {
+        document.getElementById("saveModal").style.display = "none";
+      }
+
+      function openRenameModal() {
+        const selectEl = document.getElementById("profileSelect");
+        const oldName = selectEl.value;
+        if (!oldName || oldName === "-- Select Profile --") return alert("Select a profile first.");
+        renameOldProfile = oldName;
+        document.getElementById("renameInput").value = "";
+        document.getElementById("renameModal").style.display = "block";
+        document.getElementById("renameInput").focus();
+      }
+
+      function closeRenameModal() {
+        document.getElementById("renameModal").style.display = "none";
+      }
+
+      function confirmSaveProfile() {
+        const profileName = document.getElementById("saveInput").value.trim();
+        const user = document.getElementById("userSelect").value;
+        if (!profileName) return alert("Enter a profile name");
+
+        const macroButtons = document.querySelectorAll("#macroGrid .macro-button button");
+        const macros = Array.from(macroButtons)
+          .map(btn => {
+            // Prefer data-macro attribute
+            const macroKey = btn.dataset.macro;
+            if (macroKey) return macroKey;
+
+            // Fallback: Try to reverse map from label or alt
+            const label = btn.innerText.trim() || (btn.querySelector("img")?.alt?.trim() ?? "");
+            return Object.keys(dynamicLabels).find(key => dynamicLabels[key] === label);
+          })
+          .filter(Boolean);
+
+        const baseMacros = ["Reinforce", "Resupply"];
+        const finalMacros = baseMacros.concat(macros.filter(m => !baseMacros.includes(m)));
+
+        fetch(`/save_profile`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user, profile: profileName, macros: finalMacros }),
+        })
+          .then(res => res.json())
+          .then(() => {
+            alert("Profile saved.");
+            loadProfileList(user);
+            closeSaveModal();
+          })
+          .catch(err => {
+            console.error("Save error", err);
+            alert("Failed to save profile");
+          });
+      }
+
+      document.getElementById("saveInput").addEventListener("input", function () {
+        const name = this.value.trim();
+        if (window.currentProfileList?.includes(name)) {
+          document.getElementById("overwriteWarning").style.display = "block";
+        } else {
+          document.getElementById("overwriteWarning").style.display = "none";
+        }
+      });
+
+      function confirmRenameProfile() {
+        const newName = document.getElementById("renameInput").value.trim();
+        const user = document.getElementById("userSelect").value;
+        if (!renameOldProfile || !newName) return alert("Missing profile name");
+        if (window.currentProfileList?.includes(newName)) {
+          if (!confirm(`Profile '${newName}' exists. Overwrite it?`)) return;
+        }
+        fetch(`/rename_profile`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user, old_profile: renameOldProfile, new_profile: newName }),
+        })
+          .then(res => res.json())
+          .then(() => {
+            alert("Renamed.");
+            loadProfileList(user);
+            closeRenameModal();
+          })
+          .catch(err => {
+            console.error("Rename error", err);
+            alert("Rename failed");
+          });
+      }
+
+      function toggleRemoveMode() {
+        removeMode = !removeMode;
+        const btn = document.getElementById("removeBtn");
+        btn.innerText = `Remove Mode: ${removeMode ? "ON" : "OFF"}`;
+        btn.style.backgroundColor = removeMode ? "darkred" : "";
+        const sound = document.getElementById("removeToggleSound");
+        if (sound) sound.play().catch(() => {});
+      }
+
+      function triggerMacro(name) {
+        const user = document.getElementById("userSelect").value;
+        fetch(`/trigger/${name}?user=${user}`)
+          .then(res => res.json())
+          .then(() => console.log(`Triggered: ${name}`))
+          .catch(err => console.error("Trigger failed", err));
+        const sound = document.getElementById("macroSound");
+        if (sound) sound.play().catch(() => {});
+      }
+
+      const LOCKED_MACROS = ["Reinforce", "Resupply"];
+
+      function selectMacro(label) {
+        const name = label;
+        const macroGrid = document.getElementById("macroGrid");
+        if (!label || added.has(label) || macroGrid.children.length >= MAX_DYNAMIC) return;
+        const labelText = dynamicLabels[name] || name;
+        const image = macroImages[name];
+        const hasImage = image && imageFiles.includes(image);
+        const isLocked = LOCKED_MACROS.includes(name);
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "macro-button";
+        updateGridOffset();
+
+        const sound = document.getElementById("macroAddSound");
+        if (sound) sound.play().catch(() => {});
+
+        if (macroStyles[name]?.border) {
+          wrapper.style.border = `2px solid ${macroStyles[name].border}`;
         }
 
-        function toggleRemoveMode() {
-          removeMode = !removeMode;
-          const btn = document.getElementById("removeBtn");
-          btn.innerText = `Remove Mode: ${removeMode ? "ON" : "OFF"}`;
-          btn.style.backgroundColor = removeMode ? "darkred" : "";
-          const toggleSound = document.getElementById("removeToggleSound");
-            if (toggleSound) {
-              toggleSound.currentTime = 0;
-              toggleSound.play().catch(e => {});
+        const button = document.createElement("button");
+        button.dataset.macro = name;
+        button.onclick = () => {
+          if (removeMode) {
+            if (isLocked) {
+              alert(`'${name}' cannot be removed.`);
+              return;
             }
-        }
-
-        function triggerMacro(name) {
-          const user = document.getElementById("userSelect").value;
-          fetch(`/trigger/${name}?user=${user}`) // ✅ pass user as query param
-            .then(res => res.json())
-            .then(data => {
-              console.log(`Triggered: ${name}`);
-            })
-            .catch(err => console.error("Trigger failed", err));
-            const sound = document.getElementById("macroSound");
-              if (sound) {
-                sound.currentTime = 0;
-                sound.play().catch(e => {});
-              }
-        }
-
-        function selectMacro(label) {
-          const name = label;
-          const macroGrid = document.getElementById("macroGrid");
-          if (!label || added.has(label) || macroGrid.children.length >= MAX_DYNAMIC) return;
-          const labelText = dynamicLabels[name];
-          const image = macroImages[name];
-          const hasImage = image && imageFiles.includes(image);
-
-          const wrapper = document.createElement("div");
-          wrapper.className = "macro-button";
-          updateGridOffset();
-
-          const sound = document.getElementById("macroAddSound");
-            if (sound) {
-              sound.currentTime = 0; // rewind to start
-              sound.play().catch(e => {}); // suppress autoplay errors
-              console.log("Adding macro sound played.");
+            macroGrid.removeChild(wrapper);
+            added.delete(name);
+            const sound = document.getElementById("macroRemoveSound");
+            if (sound) sound.play().catch(() => {});
+            updateGridOffset();
+            if (macroGrid.children.length < MAX_DYNAMIC) {
+              document.querySelector(".dropdown-selected").classList.remove("disabled");
+              document.querySelector(".dropdown-selected").innerText = "-- Add Macro --";
             }
-
-          // 🟨 Apply border color if style exists
-          if (macroStyles[name] && macroStyles[name].border) {
-            wrapper.style.border = `2px solid ${macroStyles[name].border}`;
-          }
-
-          const button = document.createElement("button");
-          button.onclick = () => {
-            if (removeMode) {
-              macroGrid.removeChild(wrapper);
-              added.delete(name);
-              const sound = document.getElementById("macroRemoveSound");
-                if (sound) {
-                  sound.currentTime = 0; // rewind to start
-                  sound.play().catch(e => {}); // suppress autoplay errors
-                  console.log("Remove macro sound played.");
-                }
-              updateGridOffset();
-
-              // ✅ Re-enable dropdown when under max total
-              if (macroGrid.children.length < MAX_DYNAMIC) {
-                document.querySelector(".dropdown-selected").classList.remove("disabled");
-                document.querySelector(".dropdown-selected").innerText = "-- Add Macro --";
-              }
-            } else {
-              triggerMacro(name);
-            }
-          };
-
-          if (hasImage) {
-            const img = document.createElement("img");
-            img.src = `/static/images/${image}`;
-            img.alt = labelText;
-            button.appendChild(img);
           } else {
-            button.innerText = labelText;
+            triggerMacro(name);
           }
+        };
 
-          wrapper.appendChild(button);
-          macroGrid.appendChild(wrapper);
-          added.add(name);
-
-          const dropdown = document.getElementById("macroDropdown");
-            dropdown.style.display = "none";
-
-            if (macroGrid.children.length >= MAX_DYNAMIC) {
-              document.querySelector(".dropdown-selected").classList.add("disabled");
-              document.querySelector(".dropdown-selected").innerText = "-- Max Reached --";
-            }
+        if (hasImage) {
+          const img = document.createElement("img");
+          img.src = `/static/images/${image}`;
+          img.alt = labelText;
+          button.appendChild(img);
+        } else {
+          button.innerText = labelText;
         }
-        function toggleDropdown() {
+
+        wrapper.appendChild(button);
+        macroGrid.appendChild(wrapper);
+        added.add(name);
+
+        const dropdown = document.getElementById("macroDropdown");
+        dropdown.style.display = "none";
+
+        if (macroGrid.children.length >= MAX_DYNAMIC) {
+          document.querySelector(".dropdown-selected").classList.add("disabled");
+          document.querySelector(".dropdown-selected").innerText = "-- Max Reached --";
+        }
+      }
+
+      function toggleDropdown() {
         const dropdownBtn = document.querySelector(".dropdown-selected");
         const list = document.getElementById("macroDropdown");
-
-        // If disabled, play error sound and exit
         if (dropdownBtn.classList.contains("disabled")) {
           const errorSound = document.getElementById("macroMaxSound");
-          if (errorSound) {
-            errorSound.currentTime = 0;
-            errorSound.play().catch(e => {});
-            console.log("Max reached sound played.");
-          }
+          if (errorSound) errorSound.play().catch(() => {});
           return;
         }
 
-        // Only play menu sound if not disabled
         const sound = document.getElementById("macroMenuSound");
-        if (sound) {
-          sound.currentTime = 0;
-          sound.play().catch(e => {});
-          console.log("Menu open sound played.");
-        }
-
-        if (added.size >= MAX_DYNAMIC) {
-          dropdownBtn.classList.add("disabled");
-          return;
-        } else {
-          dropdownBtn.classList.remove("disabled");
-        }
+        if (sound) sound.play().catch(() => {});
 
         list.style.display = list.style.display === "grid" ? "none" : "grid";
       }
 
-        window.onload = function () {
-          const macroGrid = document.getElementById("macroGrid");
-          const userSelect = document.getElementById("userSelect");
+      function updateGridOffset() {
+        requestAnimationFrame(() => {
+          const grid = document.getElementById("macroGrid");
+          const container = document.querySelector(".macro-grid-container");
+          const children = Array.from(grid.children);
+          const firstTop = children.length ? children[0].offsetTop : 0;
+          const hasMultipleRows = children.some(c => c.offsetTop !== firstTop);
+          container.classList.toggle("align-center", hasMultipleRows);
+        });
+      }
 
-          // Set previously selected user from localStorage
-          const storedUser = localStorage.getItem("selectedUser");
-          if (storedUser) {
-            userSelect.value = storedUser;
+      document.getElementById("userSelect").addEventListener("change", (e) => {
+        updateServer(e.target);
+        loadProfileList(e.target.value);
+      });
 
-            // Apply stored color to the top-level <select>
-            const selectedOption = userSelect.options[userSelect.selectedIndex];
-            const color = selectedOption.dataset.color;
-            userSelect.style.color = color;
-          }
-          if (macroGrid.children.length >= MAX_DYNAMIC) {
-            document.querySelector(".dropdown-selected").classList.add("disabled");
-          }
-        };
+      window.onload = () => {
+        const macroGrid = document.getElementById("macroGrid");
+        const userSelect = document.getElementById("userSelect");
+        const storedUser = localStorage.getItem("selectedUser");
+        if (storedUser) {
+          userSelect.value = storedUser;
+          updateServer(userSelect);       // sets color + plays sound + logs
+          loadProfileList(storedUser);    // loads profiles for restored user
+        }
+        if (macroGrid.children.length >= MAX_DYNAMIC) {
+          document.querySelector(".dropdown-selected").classList.add("disabled");
+        }
+      };
 
-        // Optional: Close dropdown when clicking outside
-        window.onclick = function (event) {
-          const dropdown = document.getElementById("macroDropdown");
-          if (!event.target.closest('.dropdown-container')) {
-            dropdown.style.display = "none";
-          }
-        };
+      window.onclick = (e) => {
+        const dropdown = document.getElementById("macroDropdown");
+        if (!e.target.closest(".dropdown-container")) dropdown.style.display = "none";
+      };
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeRenameModal();
+      });
     </script>
     <script>
       function updateGridOffset() {
