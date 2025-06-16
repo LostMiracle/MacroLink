@@ -6,6 +6,7 @@ from threading import Lock
 profile_lock = Lock()
 # Lock for thread-safe profile access
 import requests # type: ignore
+import urllib.parse
 
 app = Flask(__name__)
 CORS(app)
@@ -267,11 +268,24 @@ def load_profiles():
         return {}
     with open(PROFILE_PATH, 'r') as f:
         return json.load(f)
+    
+
+def load_user_profiles(user):
+    try:
+        with open("profiles.json", "r") as f:
+            data = json.load(f)
+            return data.get(user, {})  # returns a dict of profiles
+    except Exception as e:
+        print("Failed to load profiles.json:", e)
+        return {}
 
 
 def save_profiles(data):
     with open(PROFILE_PATH, 'w') as f:
         json.dump(data, f, indent=2)
+
+def normalize_name(name):
+    return name.strip().lower()
 
 @app.route('/static/manifest.json')
 def manifest():
@@ -318,7 +332,7 @@ def save_profile():
     data = request.get_json()
     user = data.get('user')
     macros = data.get('macros')
-    profile = data.get('profile', 'default')  # allow profile name override
+    profile = normalize_name(data.get('profile', 'default'))  # allow profile name override
 
     if not user or not isinstance(macros, list):
         return jsonify({'error': 'Missing user or macros'}), 400
@@ -345,26 +359,37 @@ def list_profiles():
         return jsonify({'error': 'Internal server error'}), 500
 
 
-@app.route('/get_profile')
+@app.route("/get_profile")
 def get_profile():
-    user = request.args.get('user')
-    profile = request.args.get('profile')
-    if not user or not profile:
-        return jsonify({'error': 'Missing user or profile'}), 400
+    try:
+        user = request.args.get("user", "").strip()
+        profile = request.args.get("profile", "").strip()
 
-    with profile_lock:
-        profiles = load_profiles()
-        macros = profiles.get(user, {}).get(profile)
-        if macros is None:
-            return jsonify({'error': 'Profile not found'}), 404
-        return jsonify({'macros': macros})
+        # Decode + normalize
+        profile = urllib.parse.unquote_plus(profile).lower()
+
+        # Simulated: load your profiles (dict or db)
+        all_profiles = load_user_profiles(user)  # returns dict like { "major defense": {...} }
+
+        # Normalize keys
+        normalized_profiles = {k.lower(): v for k, v in all_profiles.items()}
+        data = normalized_profiles.get(profile)
+
+        if not data:
+            return jsonify({"error": "Profile not found"}), 404
+
+        return jsonify({"macros": data})
+
+    except Exception as e:
+        print("get_profile error:", e)
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/delete_profile', methods=['POST'])
 def delete_profile():
     data = request.get_json()
     user = data.get('user')
-    profile = data.get('profile')
+    profile = normalize_name(data.get('profile'))
 
     if not user or not profile:
         return jsonify({'error': 'Missing user or profile'}), 400
@@ -381,8 +406,8 @@ def delete_profile():
 def rename_profile():
     data = request.get_json()
     user = data.get('user')
-    old_name = data.get('old_profile')
-    new_name = data.get('new_profile')
+    old_name = normalize_name(data.get('old_profile'))
+    new_name = normalize_name(data.get('new_profile'))
 
     if not user or not old_name or not new_name:
         return jsonify({'error': 'Missing parameters'}), 400
@@ -398,6 +423,10 @@ def rename_profile():
         user_profiles[new_name] = user_profiles.pop(old_name)
         save_profiles(profiles)
         return jsonify({'status': 'renamed', 'from': old_name, 'to': new_name})
+    
+@app.route('/macros.json')
+def serve_macros():
+    return send_from_directory("static/json", "macros.json")
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8888)

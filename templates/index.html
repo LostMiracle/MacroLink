@@ -50,12 +50,16 @@
       </div>
       <div class="user-profile">
         <select id="userSelect" onchange="updateServer(this)">
-          <option value="user1" data-color="greenyellow">Helldiver Green</option>
-          <option value="user2" data-color="lightskyblue">Helldiver Blue</option>
+          <option value="user1" data-color="greenyellow">
+            Helldiver Green
+          </option>
+          <option value="user2" data-color="lightskyblue">
+            Helldiver Blue
+          </option>
         </select>
         <div class="profile-container">
           <select id="profileSelect" onchange="loadProfileFromServer(this)">
-            <option disabled selected>-- Select Profile --</option>
+            <option disabled selected>-- Select Loadout --</option>
           </select>
           <div class="modal-buttons">
             <button onclick="openSaveModal()">💾</button>
@@ -64,81 +68,39 @@
           </div>
         </div>
       </div>
-      <div
-        id="saveModal"
-        style="
-          display: none;
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: #222;
-          padding: 20px;
-          border: 2px solid #888;
-          border-radius: 8px;
-          z-index: 1000;
-          color: white;
-        ">
-        <h3>Save Profile</h3>
+      <div class="modal" id="saveModal">
+        <h3>Save Loadout</h3>
         <input
           type="text"
           id="saveInput"
-          placeholder="Enter profile name"
+          placeholder="Enter Loadout name"
           style="margin: 10px 0; padding: 5px" />
         <div id="overwriteWarning" style="color: yellow; display: none">
-          This will overwrite an existing profile.
+          This will overwrite an existing loadout.
         </div>
-        <div>
-          <button onclick="confirmSaveProfile()">✅ Confirm</button>
-          <button onclick="closeSaveModal()">❌ Cancel</button>
+        <div class="button-container">
+          <button onclick="closeSaveModal()">Cancel</button>
+          <button onclick="confirmSaveProfile()">Confirm</button>
         </div>
       </div>
-      <div
-        id="renameModal"
-        style="
-          display: none;
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: #222;
-          padding: 20px;
-          border: 2px solid #888;
-          border-radius: 8px;
-          z-index: 1000;
-          color: white;
-        ">
-        <h3>Rename Profile</h3>
+      <div class="modal" id="renameModal">
+        <h3>Rename Loadout</h3>
         <input
           type="text"
           id="renameInput"
-          placeholder="New profile name"
+          placeholder="New loadout name"
           style="margin: 10px 0; padding: 5px" />
-        <div>
-          <button onclick="confirmRenameProfile()">✅ Confirm</button>
-          <button onclick="closeRenameModal()">❌ Cancel</button>
+        <div class="button-container">
+          <button onclick="closeRenameModal()">Cancel</button>
+          <button onclick="confirmRenameProfile()">Confirm</button>
         </div>
       </div>
-      <div
-        id="deleteModal"
-        style="
-          display: none;
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: #222;
-          padding: 20px;
-          border: 2px solid #888;
-          border-radius: 8px;
-          z-index: 1000;
-          color: white;
-        ">
-        <h3>Delete Profile</h3>
-        <p id="deleteMessage">Are you sure you want to delete this profile?</p>
-        <div>
-          <button onclick="confirmDeleteProfile()">✅ Confirm</button>
-          <button onclick="closeDeleteModal()">❌ Cancel</button>
+      <div class="modal" id="deleteModal">
+        <h3>Delete Loadout</h3>
+        <p id="deleteMessage">Are you sure you want to delete this loadout?</p>
+        <div class="button-container">
+          <button onclick="closeDeleteModal()">Cancel</button>
+          <button onclick="confirmDeleteProfile()">Confirm</button>
         </div>
       </div>
       <!-- <span>MacroLink v1.0.0</span> -->
@@ -215,6 +177,14 @@
       id="loginSound"
       src="/static/sounds/login.mp3"
       preload="auto"></audio>
+      <audio
+      id="cancelSound"
+      src="/static/sounds/cancel.mp3"
+      preload="auto"></audio>
+      <audio
+      id="confirmSound"
+      src="/static/sounds/confirm.mp3"
+      preload="auto"></audio>
     <script>
       // @ts-nocheck
       const macroStyles = {{ macro_styles | tojson }};
@@ -242,38 +212,46 @@
           .then(res => res.json())
           .then(data => {
             const select = document.getElementById("profileSelect");
-            select.innerHTML = '<option disabled selected>-- Select Profile --</option>';
+            select.innerHTML = '<option disabled selected>-- Select Loadout --</option>';
             data.profiles.forEach(profile => {
               const opt = document.createElement("option");
-              opt.value = profile;
+              opt.value = profile.toLowerCase(); // ✅ normalize
               opt.textContent = profile;
               select.appendChild(opt);
             });
             window.currentProfileList = data.profiles;
           })
-          .catch(err => console.error("Profile list fetch failed", err));
+          .catch(err => console.error("Loadout list fetch failed", err));
       }
 
       function loadProfileFromServer(selectEl) {
         const profileName = selectEl.value;
         const user = document.getElementById("userSelect").value;
-        fetch(`/get_profile?user=${user}&profile=${profileName}`)
+        const encodedProfile = encodeURIComponent(profileName.toLowerCase());
+        fetch(`/get_profile?user=${user}&profile=${encodedProfile}`)
           .then(res => res.json())
           .then(data => {
             const macroGrid = document.getElementById("macroGrid");
             macroGrid.innerHTML = "";
             added.clear();
+
+            if (!data.macros || !Array.isArray(data.macros)) {
+              console.warn("No macros loaded from server response", data);
+              alert("Failed to load macros for selected profile.");
+              return;
+            }
+
             data.macros.forEach(selectMacro);
           })
-          .catch(err => console.error("Profile load failed", err));
+          .catch(err => console.error("Loadout load failed", err));
       }
 
       function openDeleteModal() {
         const selectEl = document.getElementById("profileSelect");
         const profileName = selectEl.value;
-        if (!profileName || profileName === "-- Select Profile --") return alert("Select a profile to delete.");
-        document.getElementById("deleteMessage").textContent = `Delete profile '${profileName}'?`;
-        document.getElementById("deleteModal").style.display = "block";
+        if (!profileName || profileName === "-- Select Loadout --") return alert("Select a profile to delete.");
+        document.getElementById("deleteMessage").textContent = `Delete loadout '${profileName}'?`;
+        document.getElementById("deleteModal").style.display = "flex";
       }
 
       function closeDeleteModal() {
@@ -291,13 +269,13 @@
         })
           .then(res => res.json())
           .then(() => {
-            alert("Profile deleted.");
+            alert("Loadout deleted.");
             loadProfileList(user);
             closeDeleteModal();
           })
           .catch(err => {
-            console.error("Failed to delete profile", err);
-            alert("Error deleting profile.");
+            console.error("Failed to delete loadout", err);
+            alert("Error deleting loadout.");
             closeDeleteModal();
           });
       }
@@ -305,7 +283,7 @@
       function openSaveModal() {
         document.getElementById("saveInput").value = "";
         document.getElementById("overwriteWarning").style.display = "none";
-        document.getElementById("saveModal").style.display = "block";
+        document.getElementById("saveModal").style.display = "flex";
         document.getElementById("saveInput").focus();
       }
 
@@ -316,10 +294,10 @@
       function openRenameModal() {
         const selectEl = document.getElementById("profileSelect");
         const oldName = selectEl.value;
-        if (!oldName || oldName === "-- Select Profile --") return alert("Select a profile first.");
+        if (!oldName || oldName === "-- Select Loadout --") return alert("Select a loadout first.");
         renameOldProfile = oldName;
         document.getElementById("renameInput").value = "";
-        document.getElementById("renameModal").style.display = "block";
+        document.getElementById("renameModal").style.display = "flex";
         document.getElementById("renameInput").focus();
       }
 
@@ -328,9 +306,9 @@
       }
 
       function confirmSaveProfile() {
-        const profileName = document.getElementById("saveInput").value.trim();
+        const profileName = document.getElementById("saveInput").value.trim().toLowerCase(); // ✅ force lowercase
         const user = document.getElementById("userSelect").value;
-        if (!profileName) return alert("Enter a profile name");
+        if (!profileName) return alert("Enter a loadout name");
 
         const macroButtons = document.querySelectorAll("#macroGrid .macro-button button");
         const macros = Array.from(macroButtons)
@@ -355,31 +333,29 @@
         })
           .then(res => res.json())
           .then(() => {
-            alert("Profile saved.");
+            alert("Loadout saved.");
             loadProfileList(user);
             closeSaveModal();
           })
           .catch(err => {
             console.error("Save error", err);
-            alert("Failed to save profile");
+            alert("Failed to save loadout");
           });
       }
 
       document.getElementById("saveInput").addEventListener("input", function () {
-        const name = this.value.trim();
-        if (window.currentProfileList?.includes(name)) {
-          document.getElementById("overwriteWarning").style.display = "block";
-        } else {
-          document.getElementById("overwriteWarning").style.display = "none";
-        }
+        const name = this.value.trim().toLowerCase(); // normalize input
+        const existing = window.currentProfileList?.map(p => p.toLowerCase()) || [];
+        const warning = document.getElementById("overwriteWarning");
+        warning.style.display = existing.includes(name) ? "block" : "none";
       });
 
       function confirmRenameProfile() {
         const newName = document.getElementById("renameInput").value.trim();
         const user = document.getElementById("userSelect").value;
-        if (!renameOldProfile || !newName) return alert("Missing profile name");
+        if (!renameOldProfile || !newName) return alert("Missing loadout name");
         if (window.currentProfileList?.includes(newName)) {
-          if (!confirm(`Profile '${newName}' exists. Overwrite it?`)) return;
+          if (!confirm(`Loadout '${newName}' exists. Overwrite it?`)) return;
         }
         fetch(`/rename_profile`, {
           method: "POST",
@@ -536,6 +512,18 @@
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeRenameModal();
       });
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest("button")) return;
+
+        const btn = e.target.closest("button");
+        const text = btn.innerText.toLowerCase();
+
+        if (text.includes("cancel")) {
+          document.getElementById("cancelSound")?.play().catch(() => {});
+        } else if (text.includes("confirm")) {
+          document.getElementById("confirmSound")?.play().catch(() => {});
+        }
+      });
     </script>
     <script>
       function updateGridOffset() {
@@ -571,7 +559,7 @@
           id: "tsparticles",
           options: {
             /* options */
-            fpsLimit: 30,
+            fpsLimit: 20,
             fullScreen: { enable: true, zIndex: -1 },
             retina_detect: true,
             particles: {
