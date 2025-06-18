@@ -4,6 +4,11 @@
   font-weight: normal;
   font-style: normal;
 }
+.window-animation {
+  transition: all 0.15s ease;
+  opacity: 0;
+  pointer-events: none;
+}
 html,
 body {
   margin: 0;
@@ -116,6 +121,16 @@ input {
 .dropdown-container {
   position: relative;
   width: 200px;
+}
+#macroDropdown {
+  display: grid;
+  transition: all 0.15s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+#macroDropdown.show {
+  opacity: 1;
+  pointer-events: auto;
 }
 .dropdown-selected {
   background: #222;
@@ -281,7 +296,7 @@ input {
   padding: 6px;
 }
 .modal {
-  display: none;
+  display: flex;
   position: fixed;
   flex-direction: column;
   align-items: center;
@@ -297,6 +312,13 @@ input {
   border-radius: 8px;
   z-index: 1000;
   color: white;
+  transition: all 0.15s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+.modal.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 .modal input {
   width: 35vw;

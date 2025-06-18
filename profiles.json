@@ -1,6 +1,6 @@
 {
   "user1": {
-    "Bugs": [
+    "bugs": [
       "Reinforce",
       "Resupply",
       "Eagle_500KG_Bomb",
@@ -8,7 +8,7 @@
       "EXO-49_Emancipator_Exosuit",
       "Eagle_Rearm"
     ],
-    "Squids": [
+    "squids": [
       "Reinforce",
       "Resupply"
     ]
@@ -23,7 +23,7 @@
       "StA-X3_W.A.S.P._Launcher",
       "EXO-49_Emancipator_Exosuit"
     ],
-    "Major Defense": [
+    "major defense": [
       "Reinforce",
       "Resupply",
       "Eagle_Rearm",

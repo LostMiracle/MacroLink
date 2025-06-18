@@ -24,7 +24,7 @@
     <div class="controls">
       <div class="dropdown-container">
         <div class="dropdown-selected" onclick="toggleDropdown()">
-          -- Add Macro --
+          Add Macro
         </div>
         <div class="dropdown-list dashed-border" id="macroDropdown">
           {% for macro, label in dynamic_macros.items() %} {% set image =
@@ -177,14 +177,15 @@
       id="loginSound"
       src="/static/sounds/login.mp3"
       preload="auto"></audio>
-      <audio
+    <audio
       id="cancelSound"
       src="/static/sounds/cancel.mp3"
       preload="auto"></audio>
-      <audio
+    <audio
       id="confirmSound"
       src="/static/sounds/confirm.mp3"
       preload="auto"></audio>
+    <audio id="pipSound" src="/static/sounds/pip.mp3" preload="auto"></audio>
     <script>
       // @ts-nocheck
       const macroStyles = {{ macro_styles | tojson }};
@@ -196,6 +197,14 @@
       const added = new Set();
       let removeMode = false;
       let renameOldProfile = null;
+      let removeTimeout = null;
+      let macroRemovedDuringTimeout = false;
+
+      function vibrateHaptic() {
+        if (typeof Android !== "undefined" && Android.vibrate) {
+          Android.vibrate(30, 255);
+        }
+      }
 
       function updateServer(selectEl) {
         const user = selectEl.value;
@@ -251,11 +260,13 @@
         const profileName = selectEl.value;
         if (!profileName || profileName === "-- Select Loadout --") return alert("Select a profile to delete.");
         document.getElementById("deleteMessage").textContent = `Delete loadout '${profileName}'?`;
-        document.getElementById("deleteModal").style.display = "flex";
+        document.getElementById("deleteModal").classList.add("visible"); // show
+        const sound = document.getElementById("pipSound");
+        if (sound) sound.play().catch(() => {});
       }
 
       function closeDeleteModal() {
-        document.getElementById("deleteModal").style.display = "none";
+        document.getElementById("deleteModal").classList.remove("visible"); // hide
       }
 
       function confirmDeleteProfile() {
@@ -283,12 +294,14 @@
       function openSaveModal() {
         document.getElementById("saveInput").value = "";
         document.getElementById("overwriteWarning").style.display = "none";
-        document.getElementById("saveModal").style.display = "flex";
+        document.getElementById("saveModal").classList.add("visible"); // show
         document.getElementById("saveInput").focus();
+        const sound = document.getElementById("pipSound");
+        if (sound) sound.play().catch(() => {});
       }
 
       function closeSaveModal() {
-        document.getElementById("saveModal").style.display = "none";
+        document.getElementById("saveModal").classList.remove("visible"); // hide
       }
 
       function openRenameModal() {
@@ -297,16 +310,18 @@
         if (!oldName || oldName === "-- Select Loadout --") return alert("Select a loadout first.");
         renameOldProfile = oldName;
         document.getElementById("renameInput").value = "";
-        document.getElementById("renameModal").style.display = "flex";
+        document.getElementById("renameModal").classList.add("visible"); // show
         document.getElementById("renameInput").focus();
+        const sound = document.getElementById("pipSound");
+        if (sound) sound.play().catch(() => {});
       }
 
       function closeRenameModal() {
-        document.getElementById("renameModal").style.display = "none";
+        document.getElementById("renameModal").classList.remove("visible"); // hide
       }
 
       function confirmSaveProfile() {
-        const profileName = document.getElementById("saveInput").value.trim().toLowerCase(); // ✅ force lowercase
+        const profileName = document.getElementById("saveInput").value.trim().toLowerCase(); // force lowercase
         const user = document.getElementById("userSelect").value;
         if (!profileName) return alert("Enter a loadout name");
 
@@ -379,8 +394,30 @@
         const btn = document.getElementById("removeBtn");
         btn.innerText = `Remove Mode: ${removeMode ? "ON" : "OFF"}`;
         btn.style.backgroundColor = removeMode ? "darkred" : "";
-        const sound = document.getElementById("removeToggleSound");
-        if (sound) sound.play().catch(() => {});
+        document.getElementById("removeToggleSound")?.play().catch(() => {});
+        vibrateHaptic();
+
+        // If Remove Mode is turned ON, start a timeout
+        if (removeMode) {
+          macroRemovedDuringTimeout = false;
+
+          if (removeTimeout) clearTimeout(removeTimeout); // clear previous timeout just in case
+
+          removeTimeout = setTimeout(() => {
+            if (!macroRemovedDuringTimeout) {
+              removeMode = false;
+              btn.innerText = "Remove Mode: OFF";
+              btn.style.backgroundColor = "";
+              vibrateHaptic();
+            }
+          }, 5000); // 5 seconds
+        } else {
+          // If manually turned off, clear timeout
+          if (removeTimeout) {
+            clearTimeout(removeTimeout);
+            removeTimeout = null;
+          }
+        }
       }
 
       function triggerMacro(name) {
@@ -391,6 +428,7 @@
           .catch(err => console.error("Trigger failed", err));
         const sound = document.getElementById("macroSound");
         if (sound) sound.play().catch(() => {});
+        vibrateHaptic();
       }
 
       const LOCKED_MACROS = ["Reinforce", "Resupply"];
@@ -425,6 +463,7 @@
             }
             macroGrid.removeChild(wrapper);
             added.delete(name);
+            macroRemovedDuringTimeout = true;
             const sound = document.getElementById("macroRemoveSound");
             if (sound) sound.play().catch(() => {});
             updateGridOffset();
@@ -451,7 +490,7 @@
         added.add(name);
 
         const dropdown = document.getElementById("macroDropdown");
-        dropdown.style.display = "none";
+        dropdown.classList.remove("show");
 
         if (macroGrid.children.length >= MAX_DYNAMIC) {
           document.querySelector(".dropdown-selected").classList.add("disabled");
@@ -462,6 +501,7 @@
       function toggleDropdown() {
         const dropdownBtn = document.querySelector(".dropdown-selected");
         const list = document.getElementById("macroDropdown");
+
         if (dropdownBtn.classList.contains("disabled")) {
           const errorSound = document.getElementById("macroMaxSound");
           if (errorSound) errorSound.play().catch(() => {});
@@ -471,7 +511,7 @@
         const sound = document.getElementById("macroMenuSound");
         if (sound) sound.play().catch(() => {});
 
-        list.style.display = list.style.display === "grid" ? "none" : "grid";
+        list.classList.toggle("show");
       }
 
       function updateGridOffset() {
@@ -506,7 +546,7 @@
 
       window.onclick = (e) => {
         const dropdown = document.getElementById("macroDropdown");
-        if (!e.target.closest(".dropdown-container")) dropdown.style.display = "none";
+        if (!e.target.closest(".dropdown-container")) dropdown.classList.remove("show");
       };
 
       document.addEventListener("keydown", (e) => {

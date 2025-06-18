@@ -22,6 +22,7 @@ STATIC_MACROS = {
 }
 
 DYNAMIC_MACROS = {
+    # Orbital Strikes
     "Orbital_Precision_Strike": "Orbital Precision Strike",
     "Orbital_Gatling_Barrage": "Orbital Gatling Barrage",
     "Orbital_Airburst_Strike": "Orbital Airburst Strike",
@@ -34,6 +35,7 @@ DYNAMIC_MACROS = {
     "Orbital_EMS_Strike": "Orbital EMS Strike",
     "Orbital_Gas_Strike": "Orbital Gas Strike",
     "Orbital_Smoke_Strike": "Orbital Smoke Strike",
+    # Eagle Strikes
     "Eagle_500KG_Bomb": "Eagle 500KG Bomb",
     "Eagle_Strafing_Run": "Eagle Strafing Run",
     "Eagle_110MM_Rocket_Pods": "Eagle 110MM Rocket Pods",
@@ -41,6 +43,7 @@ DYNAMIC_MACROS = {
     "Eagle_Cluster_Bomb": "Eagle Cluster Bomb",
     "Eagle_Napalm_Airstrike": "Eagle Napalm Airstrike",
     "Eagle_Smoke_Strike": "Eagle Smoke Strike",
+    # Support Weapons
     "CQC-1_One_True_Flag": "CQC-1 One True Flag",
     "MG-43_Machine_Gun": "MG-43 Machine Gun",
     "M-105_Stalwart": "M-105 Stalwart",
@@ -61,6 +64,7 @@ DYNAMIC_MACROS = {
     "FAF-14_Spear_Launcher": "FAF-14 Spear Launcher",
     "StA-X3_W.A.S.P._Launcher": "StA-X3 W.A.S.P. Launcher",
     "GR-8_Recoilless_Rifle": "GR-8 Recoilless Rifle",
+    # Support Equipment
     "SH-32_Shield_Generator_Pack": "SH-32 Shield Generator Pack",
     "SH-51_Directional_Shield_Backpack": "SH-51 Directional Shield Backpack",
     "SH-20_Ballistic_Shield_Backpack": "SH-20 Ballistic Shield Backpack",
@@ -75,6 +79,7 @@ DYNAMIC_MACROS = {
     "M-102_Fast_Recon_Vehicle": "M-102 Fast Recon Vehicle",
     "EXO-49_Emancipator_Exosuit": "EXO-49 Emancipator Exosuit",
     "EXO-45_Patriot_Exosuit": "EXO-45 Patriot Exosuit",
+    # Sentries and Emplacements
     "A-G-16_Gatling_Sentry": "A/G-16 Gatling Sentry",
     "A-MG-43_Machine_Gun_Sentry": "A/MG-43 Machine Gun Sentry",
     "E-FLAM-40_Flame_Sentry": "E/FLAM-40 Flame Sentry",
@@ -91,6 +96,7 @@ DYNAMIC_MACROS = {
     "MD-8_Gas_Mines": "MD-8 Gas Mines",
     "MD-6_Anti-Personnel_Minefield": "MD-6 Anti-Personnel Minefield",
     "MD-14_Incendiary_Mines": "MD-14 Incendiary Mines",
+    # General Actions
     "SOS_Beacon": "SOS Beacon",
     "NUX-223_Hellbomb": "NUX-223 Hellbomb",
     "SSSD_Delivery": "SSSD Delivery",
@@ -101,6 +107,7 @@ DYNAMIC_MACROS = {
 }
 
 MACRO_IMAGES = {
+    # Orbital Strikes
     "Orbital_Precision_Strike": "Orbital_Precision_Strike.png",
     "Orbital_Gatling_Barrage": "Orbital_Gatling_Barrage.png",
     "Orbital_Airburst_Strike": "Orbital_Airburst_Strike.png",
@@ -113,6 +120,7 @@ MACRO_IMAGES = {
     "Orbital_EMS_Strike": "Orbital_EMS_Strike.png",
     "Orbital_Gas_Strike": "Orbital_Gas_Strike.png",
     "Orbital_Smoke_Strike": "Orbital_Smoke_Strike.png",
+    # Eagle Strikes
     "Eagle_500KG_Bomb": "Eagle_500KG_Bomb.png",
     "Eagle_Strafing_Run": "Eagle_Strafing_Run.png",
     "Eagle_110MM_Rocket_Pods": "Eagle_110MM_Rocket_Pods.png",
@@ -120,6 +128,7 @@ MACRO_IMAGES = {
     "Eagle_Cluster_Bomb": "Eagle_Cluster_Bomb.png",
     "Eagle_Napalm_Airstrike": "Eagle_Napalm_Airstrike.png",
     "Eagle_Smoke_Strike": "Eagle_Smoke_Strike.png",
+    # Support Weapons
     "CQC-1_One_True_Flag": "CQC-1_One_True_Flag.png",
     "MG-43_Machine_Gun": "MG-43_Machine_Gun.png",
     "M-105_Stalwart": "M-105_Stalwart.png",
@@ -139,6 +148,8 @@ MACRO_IMAGES = {
     "FAF-14_Spear_Launcher": "FAF-14_Spear_Launcher.png",
     "StA-X3_W.A.S.P._Launcher": "StA-X3_W.A.S.P._Launcher.png",
     "GR-8_Recoilless_Rifle": "GR-8_Recoilless_Rifle.png",
+    "GL-52_De-Escalator": "GL-52_De-Escalator.png",
+    # Support Equipment
     "SH-32_Shield_Generator_Pack": "SH-32_Shield_Generator_Pack.png",
     "SH-51_Directional_Shield_Backpack": "SH-51_Directional_Shield_Backpack.png",
     "SH-20_Ballistic_Shield_Backpack": "SH-20_Ballistic_Shield_Backpack.png",
@@ -152,6 +163,8 @@ MACRO_IMAGES = {
     "M-102_Fast_Recon_Vehicle": "M-102_Fast_Recon_Vehicle.png",
     "EXO-49_Emancipator_Exosuit": "EXO-49_Emancipator_Exosuit.png",
     "EXO-45_Patriot_Exosuit": "EXO-45_Patriot_Exosuit.png",
+    "AX_ARC-3_Guard_Dog_K9": "AX_ARC-3_Guard_Dog_K9.png",
+    # Sentries and Emplacements
     "A-G-16_Gatling_Sentry": "A_G-16_Gatling_Sentry.png",
     "A-MG-43_Machine_Gun_Sentry": "A_MG-43_Machine_Gun_Sentry.png",
     "E-FLAM-40_Flame_Sentry": "E_FLAM-40_Flame_Sentry.png",
@@ -169,6 +182,7 @@ MACRO_IMAGES = {
     "MD-6_Anti-Personnel_Minefield": "MD-6_Anti-Personnel_Minefield.png",
     "MD-14_Incendiary_Mines": "MD-14_Incendiary_Mines.png",
     "NUX-223_Hellbomb": "NUX-223_Hellbomb.png",
+    # General Actions
     "SSSD_Delivery": "SSSD_Delivery.png",
     "Seismic_Probe": "Seismic_Probe.png",
     "Upload_Data": "Upload_Data.png",
@@ -176,9 +190,7 @@ MACRO_IMAGES = {
     "Reinforce": "redeploy.png",
     "Resupply": "resupply.png",
     "SOS_Beacon": "sos.png",
-    "GL-52_De-Escalator": "GL-52_De-Escalator.png",
-    "AX_ARC-3_Guard_Dog_K9": "AX_ARC-3_Guard_Dog_K9.png",
-    "SEAF_Artillery": "SEAF_Artillery.png"
+    "SEAF_Artillery": "SEAF_Artillery.png" 
 }
 
 # Border colors

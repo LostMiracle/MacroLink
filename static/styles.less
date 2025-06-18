@@ -7,6 +7,12 @@
 
 @default-border: 1px solid #333;
 
+.window-animation {
+    transition: all 0.15s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
 html,
 body {
     margin: 0;
@@ -133,6 +139,16 @@ input {
     width: 200px;
 }
 
+#macroDropdown {
+    display: grid;
+    .window-animation();
+
+    &.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
 .dropdown-selected {
     background: #222;
     color: white;
@@ -162,6 +178,8 @@ input {
     max-height: calc(100vh - 85px);
     overflow-y: auto;
     left: 32px;
+    // opacity: 0;
+    // .window-animation();
 
     .dropdown-item:nth-child(6n + 1),
     .dropdown-item:nth-child(6n + 2),
@@ -330,7 +348,8 @@ input {
 }
 
 .modal {
-    display: none;
+    display: flex;
+    pointer-events: none;
     position: fixed;
     flex-direction: column;
     align-items: center;
@@ -346,6 +365,12 @@ input {
     border-radius: 8px;
     z-index: 1000;
     color: white;
+    .window-animation();
+
+    &.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
 
     input {
         width: 35vw;
