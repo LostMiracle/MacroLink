@@ -16,7 +16,7 @@
     <link rel="apple-touch-icon" href="/static/icons/icon-192.png" />
     <link rel="stylesheet" type="text/css" href="/static/styles.css" />
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Macro Panel</title>
   </head>
 
@@ -24,7 +24,7 @@
     <div class="controls">
       <div class="dropdown-container">
         <div class="dropdown-selected" onclick="toggleDropdown()">
-          Stratagems
+          Stratagems <span>▼</span>
         </div>
         <div class="dropdown-list dashed-border" id="macroDropdown">
           {% for macro, label in dynamic_macros.items() %} {% set image =
@@ -629,7 +629,8 @@
         const sound = document.getElementById("macroMenuSound");
         if (sound) sound.play().catch(() => {});
 
-        list.classList.toggle("show");
+        const isOpen = list.classList.toggle("show");
+        dropdownBtn.classList.toggle("open", isOpen);
       }
 
       function updateGridOffset() {
