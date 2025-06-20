@@ -64,12 +64,12 @@ input {
     align-items: flex-start;
     height: 100%;
     /* Or a fixed height if needed */
-    padding: 30px 42px;
+    padding: 28px 42px;
     z-index: 5;
 
     &.align-center {
-        align-items: center;
-        padding: 0px 42px;
+        align-items: flex-start;
+        padding: 28px 42px;
     }
 }
 
@@ -214,13 +214,6 @@ input {
     }
 }
 
-/* .particles {
-    transform: translateY(-60%);
-    z-index: 2;
-    backdrop-filter: blur(0.5px);
-    -webkit-backdrop-filter: blur(0.5px);
-    filter: blur(0.5px);
-} */
 #tsparticles {
     position: fixed;
     width: 100%;
@@ -228,9 +221,6 @@ input {
     z-index: 2;
     top: 0;
     left: 0;
-    /* backdrop-filter: blur(1px); */
-    /* -webkit-backdrop-filter: blur(1px); */
-    /* Safari */
     filter: blur(0.5px);
 }
 
@@ -321,8 +311,9 @@ input {
     flex-direction: row;
     gap: 8px;
     background-color: #222;
-    padding: 5px;
+    padding: 0px 5px;
     border: @default-border;
+    height: calc(52px - 12px);
 
     select {
         padding: 0px;
@@ -337,11 +328,16 @@ input {
             display: flex;
             flex-direction: row;
             gap: 8px;
+            align-items: center;
 
             button {
-                background-color: #222;
+                background-color: #2c2c2c;
                 border: none;
                 padding: 6px;
+                width: 32px;
+                height: 32px;
+                border-radius: 6px;
+                // border: 1px solid #3c3c3c;
             }
         }
     }

@@ -24,7 +24,7 @@
     <div class="controls">
       <div class="dropdown-container">
         <div class="dropdown-selected" onclick="toggleDropdown()">
-          Add Macro
+          Stratagems
         </div>
         <div class="dropdown-list dashed-border" id="macroDropdown">
           {% for macro, label in dynamic_macros.items() %} {% set image =
@@ -62,6 +62,7 @@
             <option disabled selected>-- Select Loadout --</option>
           </select>
           <div class="modal-buttons">
+            <button onclick="openQuickUpdateModal()">🔄</button>
             <button onclick="openSaveModal()">💾</button>
             <button onclick="openRenameModal()">✏️</button>
             <button onclick="openDeleteModal()">🗑️</button>
@@ -103,9 +104,18 @@
           <button onclick="confirmDeleteProfile()">Confirm</button>
         </div>
       </div>
-      <!-- <span>MacroLink v1.0.0</span> -->
+      <div class="modal" id="quickUpdateModal">
+        <h3>Update Current Loadout?</h3>
+        <p id="quickUpdateMessage">
+          Are you sure you want to overwrite this loadout?
+        </p>
+        <div class="button-container">
+          <button onclick="closeQuickUpdateModal()">Cancel</button>
+          <button onclick="confirmQuickUpdate()">Confirm</button>
+        </div>
+      </div>
       <div class="remove-mode" onclick="toggleRemoveMode()" id="removeBtn">
-        Remove Mode: OFF
+        Remove Mode: <span id="removeStatus">OFF</span> <span id="removeTimer"></span>
       </div>
     </div>
 
@@ -197,8 +207,18 @@
       const added = new Set();
       let removeMode = false;
       let renameOldProfile = null;
-      let removeTimeout = null;
       let macroRemovedDuringTimeout = false;
+
+      let removeTimeout = null;
+      let timerInterval = null;
+      let timeRemaining = 0;
+
+      const glowMap = {
+        red: "rgba(255, 80, 80, 0.75)",         // warmer coral-like glow
+        blue: "rgba(80, 180, 255, 0.75)",       // soft cyan to contrast dark blue
+        green: "rgba(120, 255, 160, 0.45)",      // minty green for a lively glow
+        yellow: "rgba(255, 220, 100, 0.6)"      // golden glow to offset bright yellow
+      };
 
       function vibrateHaptic() {
         if (typeof Android !== "undefined" && Android.vibrate) {
@@ -224,7 +244,7 @@
             select.innerHTML = '<option disabled selected>-- Select Loadout --</option>';
             data.profiles.forEach(profile => {
               const opt = document.createElement("option");
-              opt.value = profile.toLowerCase(); // ✅ normalize
+              opt.value = profile.toLowerCase(); // normalize
               opt.textContent = profile;
               select.appendChild(opt);
             });
@@ -389,35 +409,106 @@
           });
       }
 
-      function toggleRemoveMode() {
-        removeMode = !removeMode;
-        const btn = document.getElementById("removeBtn");
-        btn.innerText = `Remove Mode: ${removeMode ? "ON" : "OFF"}`;
-        btn.style.backgroundColor = removeMode ? "darkred" : "";
-        document.getElementById("removeToggleSound")?.play().catch(() => {});
-        vibrateHaptic();
+      function openQuickUpdateModal() {
+        const selectEl = document.getElementById("profileSelect");
+        const profileName = selectEl.value;
 
-        // If Remove Mode is turned ON, start a timeout
-        if (removeMode) {
-          macroRemovedDuringTimeout = false;
-
-          if (removeTimeout) clearTimeout(removeTimeout); // clear previous timeout just in case
-
-          removeTimeout = setTimeout(() => {
-            if (!macroRemovedDuringTimeout) {
-              removeMode = false;
-              btn.innerText = "Remove Mode: OFF";
-              btn.style.backgroundColor = "";
-              vibrateHaptic();
-            }
-          }, 5000); // 5 seconds
-        } else {
-          // If manually turned off, clear timeout
-          if (removeTimeout) {
-            clearTimeout(removeTimeout);
-            removeTimeout = null;
-          }
+        if (!profileName || profileName === "-- Select Loadout --") {
+          alert("No profile selected to update.");
+          return;
         }
+
+        document.getElementById("quickUpdateMessage").textContent = 
+          `Are you sure you want to overwrite the loadout '${profileName}'?`;
+
+        document.getElementById("quickUpdateModal").classList.add("visible");
+
+        const sound = document.getElementById("pipSound");
+        if (sound) sound.play().catch(() => {});
+      }
+
+      function closeQuickUpdateModal() {
+        document.getElementById("quickUpdateModal").classList.remove("visible");
+      }
+
+      function confirmQuickUpdate() {
+        const profileName = document.getElementById("profileSelect").value;
+        const user = document.getElementById("userSelect").value;
+
+        const macroButtons = document.querySelectorAll("#macroGrid .macro-button button");
+        const macros = Array.from(macroButtons)
+          .map(btn => {
+            const macroKey = btn.dataset.macro;
+            if (macroKey) return macroKey;
+            const label = btn.innerText.trim() || (btn.querySelector("img")?.alt?.trim() ?? "");
+            return Object.keys(dynamicLabels).find(key => dynamicLabels[key] === label);
+          })
+          .filter(Boolean);
+
+        const baseMacros = ["Reinforce", "Resupply"];
+        const finalMacros = baseMacros.concat(macros.filter(m => !baseMacros.includes(m)));
+
+        fetch(`/save_profile`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user, profile: profileName.toLowerCase(), macros: finalMacros }),
+        })
+          .then(res => res.json())
+          .then(() => {
+            alert(`Loadout '${profileName}' updated.`);
+            closeQuickUpdateModal();
+            const sound = document.getElementById("confirmSound");
+            if (sound) sound.play().catch(() => {});
+          })
+          .catch(err => {
+            console.error("Quick update failed", err);
+            alert("Failed to update loadout.");
+            closeQuickUpdateModal();
+          });
+      }
+
+      function toggleRemoveMode() {
+        const btn = document.getElementById("removeBtn");
+        const status = document.getElementById("removeStatus");
+        const timer = document.getElementById("removeTimer");
+
+        vibrateHaptic();
+        document.getElementById("removeToggleSound")?.play().catch(() => {});
+
+        if (removeMode) {
+          // Turn OFF manually
+          clearTimeout(removeTimeout);
+          clearInterval(timerInterval);
+          removeMode = false;
+          status.innerText = "OFF";
+          timer.innerText = "";
+          btn.style.backgroundColor = "";
+          return;
+        }
+
+        // Turn ON
+        removeMode = true;
+        let timeRemaining = 5;
+        status.innerText = "ON";
+        timer.innerText = `(${timeRemaining})`;
+        btn.style.backgroundColor = "darkred";
+
+        timerInterval = setInterval(() => {
+          timeRemaining--;
+          timer.innerText = `(${timeRemaining})`;
+
+          if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+          }
+        }, 1000);
+
+        removeTimeout = setTimeout(() => {
+          removeMode = false;
+          status.innerText = "OFF";
+          timer.innerText = "";
+          btn.style.backgroundColor = "";
+          vibrateHaptic();
+        }, 5000);
       }
 
       function triggerMacro(name) {
@@ -449,8 +540,12 @@
         const sound = document.getElementById("macroAddSound");
         if (sound) sound.play().catch(() => {});
 
+        const baseColor = macroStyles[name].border;
+        const glowColor = glowMap[baseColor] || baseColor;
+
         if (macroStyles[name]?.border) {
-          wrapper.style.border = `2px solid ${macroStyles[name].border}`;
+          wrapper.style.border = `2px solid ${baseColor}`;
+          wrapper.style.boxShadow = `0 0 12px 3px ${glowColor}`; // outer glow
         }
 
         const button = document.createElement("button");
@@ -464,12 +559,35 @@
             macroGrid.removeChild(wrapper);
             added.delete(name);
             macroRemovedDuringTimeout = true;
+            // Restart the timer
+            clearTimeout(removeTimeout);
+            clearInterval(timerInterval);
+
+            let timeRemaining = 5;
+            document.getElementById("removeTimer").innerText = `(${timeRemaining})`;
+
+            timerInterval = setInterval(() => {
+              timeRemaining--;
+              document.getElementById("removeTimer").innerText = `(${timeRemaining})`;
+
+              if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+              }
+            }, 1000);
+
+            removeTimeout = setTimeout(() => {
+              removeMode = false;
+              document.getElementById("removeStatus").innerText = "OFF";
+              document.getElementById("removeTimer").innerText = "";
+              document.getElementById("removeBtn").style.backgroundColor = "";
+              vibrateHaptic();
+            }, 5000);
             const sound = document.getElementById("macroRemoveSound");
             if (sound) sound.play().catch(() => {});
             updateGridOffset();
             if (macroGrid.children.length < MAX_DYNAMIC) {
               document.querySelector(".dropdown-selected").classList.remove("disabled");
-              document.querySelector(".dropdown-selected").innerText = "-- Add Macro --";
+              document.querySelector(".dropdown-selected").innerText = "Stratagems";
             }
           } else {
             triggerMacro(name);
@@ -519,9 +637,22 @@
           const grid = document.getElementById("macroGrid");
           const container = document.querySelector(".macro-grid-container");
           const children = Array.from(grid.children);
-          const firstTop = children.length ? children[0].offsetTop : 0;
-          const hasMultipleRows = children.some(c => c.offsetTop !== firstTop);
-          container.classList.toggle("align-center", hasMultipleRows);
+
+          if (children.length === 0) {
+            container.classList.remove("align-center");
+            return;
+          }
+
+          const firstTop = children[0].offsetTop;
+          const hasMultipleRows = children.some(
+            (child) => child.offsetTop !== firstTop
+          );
+
+          if (hasMultipleRows) {
+            container.classList.add("align-center"); // Center when multiple rows
+          } else {
+            container.classList.remove("align-center"); // Top when only 1 row
+          }
         });
       }
 
@@ -534,14 +665,34 @@
         const macroGrid = document.getElementById("macroGrid");
         const userSelect = document.getElementById("userSelect");
         const storedUser = localStorage.getItem("selectedUser");
+
         if (storedUser) {
           userSelect.value = storedUser;
           updateServer(userSelect);       // sets color + plays sound + logs
           loadProfileList(storedUser);    // loads profiles for restored user
         }
+
         if (macroGrid.children.length >= MAX_DYNAMIC) {
           document.querySelector(".dropdown-selected").classList.add("disabled");
         }
+
+        // 🔥 Apply glow effects to statically-rendered macros
+        const macroButtons = document.querySelectorAll("#macroGrid .macro-button");
+
+        macroButtons.forEach(wrapper => {
+          const img = wrapper.querySelector("img");
+          if (!img) return;
+
+          const label = img.alt; // or use dataset if available
+          const style = macroStyles[label];
+          if (!style || !style.border) return;
+
+          const baseColor = style.border;
+          const glowColor = glowMap[baseColor] || baseColor;
+
+          wrapper.style.border = `2px solid ${baseColor}`;
+          wrapper.style.boxShadow = `0 0 12px 3px ${glowColor}`;
+        });
       };
 
       window.onclick = (e) => {
@@ -566,29 +717,7 @@
       });
     </script>
     <script>
-      function updateGridOffset() {
-        requestAnimationFrame(() => {
-          const grid = document.getElementById("macroGrid");
-          const container = document.querySelector(".macro-grid-container");
-          const children = Array.from(grid.children);
-
-          if (children.length === 0) {
-            container.classList.remove("align-center");
-            return;
-          }
-
-          const firstTop = children[0].offsetTop;
-          const hasMultipleRows = children.some(
-            (child) => child.offsetTop !== firstTop
-          );
-
-          if (hasMultipleRows) {
-            container.classList.add("align-center"); // Center when multiple rows
-          } else {
-            container.classList.remove("align-center"); // Top when only 1 row
-          }
-        });
-      }
+      
     </script>
     <script src="/static/js/min/tsparticles.bundle.min.js"></script>
     <script>
