@@ -9,7 +9,8 @@
       "Eagle_Rearm",
       "Orbital_Gas_Strike",
       "GL-52_De-Escalator",
-      "MD-8_Gas_Mines"
+      "MD-8_Gas_Mines",
+      "Orbital_Napalm_Barrage"
     ],
     "squid": [
       "Reinforce",
@@ -40,13 +41,23 @@
       "E-AT-12_Anti-Tank_Emplacement",
       "A-ARC-3_Tesla_Tower"
     ],
-    "def": [
+    "stand your ground": [
       "Reinforce",
       "Resupply",
+      "Eagle_Rearm",
       "Eagle_Napalm_Airstrike",
       "StA-X3_W.A.S.P._Launcher",
       "EXO-49_Emancipator_Exosuit",
       "MD-8_Gas_Mines"
+    ],
+    "jump trooper": [
+      "Reinforce",
+      "Resupply",
+      "Eagle_Rearm",
+      "Eagle_Napalm_Airstrike",
+      "EXO-49_Emancipator_Exosuit",
+      "LIFT-850_Jump_Pack",
+      "LAS-99_Quasar_Cannon"
     ]
   }
 }
