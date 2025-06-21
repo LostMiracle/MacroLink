@@ -301,6 +301,14 @@ input {
     color: white;
     cursor: pointer;
 
+    // Visually disable macros in dropdown when already added
+    &.disabled-macro {
+        // opacity: 0.4;
+        pointer-events: none;
+        background-color: yellow !important;
+        color: black !important;
+    }
+
     img {
         width: 64px;
         height: 64px;

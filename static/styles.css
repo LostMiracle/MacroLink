@@ -255,6 +255,11 @@ input {
   color: white;
   cursor: pointer;
 }
+.dropdown-item.disabled-macro {
+  pointer-events: none;
+  background-color: yellow !important;
+  color: black !important;
+}
 .dropdown-item img {
   width: 64px;
   height: 64px;

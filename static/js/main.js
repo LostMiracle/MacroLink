@@ -67,13 +67,11 @@ function selectUser(div, silent = false) {
   const user = div.dataset.user;
   const color = div.dataset.color;
 
-  document
-    .querySelectorAll(".user-item")
-    .forEach((el) => {
-      el.classList.remove("selected-user");
-      el.style.backgroundColor = "";
-      el.style.color = "";
-    });
+  document.querySelectorAll(".user-item").forEach((el) => {
+    el.classList.remove("selected-user");
+    el.style.backgroundColor = "";
+    el.style.color = "";
+  });
 
   div.classList.add("selected-user");
   div.style.backgroundColor = "yellow";
@@ -132,6 +130,7 @@ function loadProfileFromServer(selectEl) {
       }
 
       data.macros.forEach(selectMacro);
+      updateMacroDropdownState();
     })
     .catch((err) => console.error("Loadout load failed", err));
 }
@@ -264,8 +263,11 @@ function confirmSaveProfile() {
       loadProfileList(user);
       // Refresh preview icons after saving
       setTimeout(() => {
-        const selected = document.querySelector(".profile-selected")?.textContent.trim();
-        if (selected) populateCustomProfileList(window.currentProfileList || []);
+        const selected = document
+          .querySelector(".profile-selected")
+          ?.textContent.trim();
+        if (selected)
+          populateCustomProfileList(window.currentProfileList || []);
       }, 300);
       closeSaveModal();
 
@@ -401,8 +403,11 @@ function confirmQuickUpdate() {
       loadProfileList(user);
       // Refresh preview icons after saving
       setTimeout(() => {
-        const selected = document.querySelector(".profile-selected")?.textContent.trim();
-        if (selected) populateCustomProfileList(window.currentProfileList || []);
+        const selected = document
+          .querySelector(".profile-selected")
+          ?.textContent.trim();
+        if (selected)
+          populateCustomProfileList(window.currentProfileList || []);
       }, 300);
       closeQuickUpdateModal();
       const sound = document.getElementById("confirmSound");
@@ -475,6 +480,24 @@ function triggerMacro(name) {
 
 const LOCKED_MACROS = ["Reinforce", "Resupply"];
 
+function updateMacroDropdownState() {
+  const currentMacros = Array.from(
+    document.querySelectorAll("#macroGrid button")
+  ).map((btn) => btn.dataset.macro);
+
+  document.querySelectorAll("#macroDropdown .dropdown-item").forEach((item) => {
+    const macro = item.dataset.macro;
+    if (!macro) return;
+    if (currentMacros.includes(macro)) {
+      item.classList.add("disabled-macro");
+      item.setAttribute("aria-disabled", "true");
+    } else {
+      item.classList.remove("disabled-macro");
+      item.removeAttribute("aria-disabled");
+    }
+  });
+}
+
 function selectMacro(label) {
   const name = label;
   const macroGrid = document.getElementById("macroGrid");
@@ -510,6 +533,11 @@ function selectMacro(label) {
       }
       macroGrid.removeChild(wrapper);
       added.delete(name);
+      // Re-enable the corresponding dropdown item
+      const item = document.querySelector(`.dropdown-item[data-macro="${name}"]`);
+      if (item) {
+        item.classList.remove("disabled-macro");
+      }
       macroRemovedDuringTimeout = true;
       // Restart the timer
       clearTimeout(removeTimeout);
@@ -559,13 +587,22 @@ function selectMacro(label) {
   macroGrid.appendChild(wrapper);
   added.add(name);
 
-  const dropdown = document.getElementById("macroDropdown");
-  dropdown.classList.remove("show");
+  // After adding, if we've reached the max, close dropdown and play sound
+  if (macroGrid.children.length >= MAX_DYNAMIC) {
+    const dropdown = document.getElementById("macroDropdown");
+    dropdown.classList.remove("show");
+    document.querySelector(".dropdown-toggle")?.classList.remove("open");
+    document.getElementById("macroMaxSound")?.play().catch(() => {});
+  }
+
+  // const dropdown = document.getElementById("macroDropdown");
+  // dropdown.classList.remove("show");
 
   if (macroGrid.children.length >= MAX_DYNAMIC) {
     document.querySelector(".dropdown-toggle").classList.add("disabled");
     document.querySelector(".dropdown-selected").textContent = "Max Reached";
   }
+  updateMacroDropdownState();
 }
 
 function toggleDropdown() {
@@ -711,14 +748,25 @@ window.onload = () => {
     wrapper.style.border = `2px solid ${baseColor}`;
     wrapper.style.boxShadow = `0 0 12px 3px ${glowColor}`;
   });
+  updateMacroDropdownState();
 };
 
 window.onclick = (e) => {
-  const previouslySuppressed = suppressMenuSound;
-  suppressMenuSound = false;
   const dropdown = document.getElementById("macroDropdown");
-  if (!e.target.closest(".dropdown-container"))
+  if (
+    dropdown.classList.contains("show") &&
+    !e.target.closest(".dropdown-container")
+  ) {
     dropdown.classList.remove("show");
+    document.querySelector(".dropdown-toggle")?.classList.remove("open");
+    if (!suppressMenuSound) {
+      document
+        .getElementById("macroMenuSound")
+        ?.play()
+        .catch(() => {});
+    }
+  }
+  suppressMenuSound = false;
 };
 
 document
@@ -782,7 +830,10 @@ document.addEventListener("click", (e) => {
   }
 
   // Close macro dropdown
-  if (!e.target.closest(".dropdown-toggle")) {
+  if (
+    !e.target.closest(".dropdown-toggle") &&
+    !e.target.closest("#macroDropdown")
+  ) {
     const list = document.getElementById("macroDropdown");
     const wasOpen = list?.classList.contains("show");
     list?.classList.remove("show");
@@ -830,4 +881,24 @@ document.querySelectorAll(".user-item").forEach((item) => {
     e.stopPropagation(); // Prevents click from bubbling to document-level handler
     selectUser(item);
   };
+});
+
+// Patch macro dropdown items to set dataset.macro if not already set (for static HTML)
+document.querySelectorAll("#macroDropdown .dropdown-item").forEach((item) => {
+  // Only set if not already set (idempotent)
+  if (!item.dataset.macro) {
+    // Try to infer macro key from img src or span text
+    const img = item.querySelector("img");
+    if (img && img.alt) {
+      // Try to reverse map label to macro key
+      const label = img.alt.trim();
+      // dynamicLabels is a map macroKey -> label, so reverse lookup:
+      for (const [macroKey, macroLabel] of Object.entries(dynamicLabels)) {
+        if (macroLabel === label) {
+          item.dataset.macro = macroKey;
+          break;
+        }
+      }
+    }
+  }
 });
