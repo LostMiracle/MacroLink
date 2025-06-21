@@ -26,6 +26,7 @@ select:focus {
   align-items: center;
   justify-content: space-between;
   padding-right: 5px;
+  height: 100%;
 }
 .spaced-row span {
   transition: transform 250ms ease;
@@ -226,10 +227,11 @@ input {
   display: none;
   grid-template-columns: repeat(3, 1fr);
   position: absolute;
+  left: 32px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   background-color: rgba(25, 25, 25, 0.85);
-  width: calc(100vw - 34px);
+  width: calc(100vw - 98px);
   z-index: 1000;
   max-height: calc(100vh - 80px);
   overflow-y: auto;
@@ -357,6 +359,7 @@ input {
   display: flex;
   flex-direction: row;
   gap: 5px;
+  height: 100%;
 }
 .user-profile .profile-container select {
   padding-left: 10px;
@@ -418,7 +421,7 @@ input {
   background-color: rgba(25, 25, 25, 0.85);
   border: 1px solid #333;
   border-top: none;
-  width: calc(100vw - 34px);
+  width: calc(100vw - 98px);
   padding: 6px;
   max-height: calc(100vh - 80px);
   overflow-y: auto;
@@ -505,6 +508,7 @@ input {
   border-top: none;
   max-height: 180px;
   overflow-y: auto;
+  transform: translateY(1px);
   border: 1px solid transparent;
   border-width: 1px;
   border-image: repeating-linear-gradient(45deg, yellow 0, yellow 5px, transparent 5px, transparent 10px);

@@ -69,8 +69,15 @@ function selectUser(div, silent = false) {
 
   document
     .querySelectorAll(".user-item")
-    .forEach((el) => el.classList.remove("selected-user"));
+    .forEach((el) => {
+      el.classList.remove("selected-user");
+      el.style.backgroundColor = "";
+      el.style.color = "";
+    });
+
   div.classList.add("selected-user");
+  div.style.backgroundColor = "yellow";
+  div.style.color = "black";
 
   const selected = document.querySelector(".user-selected");
   selected.textContent = div.textContent;
