@@ -32,7 +32,10 @@
         <div class="dropdown-list" id="macroDropdown">
           {% for macro, label in dynamic_macros.items() %} {% set image =
           macro_images[macro] %} {% set style = macro_styles.get(macro) %}
-          <div class="dropdown-item" onclick="selectMacro('{{ macro }}')" data-macro="{{ macro }}">
+          <div
+            class="dropdown-item"
+            onclick="selectMacro('{{ macro }}')"
+            data-macro="{{ macro }}">
             <img
               src="{{ url_for('static', filename='images/' + image) }}"
               alt="{{ label }}"
@@ -66,16 +69,17 @@
             </div>
           </div>
         </div>
+        <div class="profile-dropdown" onclick="toggleProfileDropdown()">
+          <div class="spaced-row">
+            <div class="profile-selected">Select Loadout</div>
+            <span>▼</span>
+          </div>
+        </div>
         <div class="profile-container">
           <!-- <select id="profileSelect" onchange="loadProfileFromServer(this)">
             <option disabled selected>-- Select Loadout --</option>
           </select> -->
-          <div class="profile-dropdown" onclick="toggleProfileDropdown()">
-            <div class="spaced-row">
-              <div class="profile-selected">Select Loadout</div>
-              <span>▼</span>
-            </div>
-          </div>
+
           <div class="profile-list" id="profileDropdownList"></div>
           <div class="modal-buttons">
             <button onclick="openQuickUpdateModal()">🔄</button>

@@ -48,7 +48,8 @@ select:focus {
 }
 
 .dropdown-toggle {
-    width: 155px;
+    width: 15vw;
+    min-width: 155px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -206,11 +207,13 @@ input {
     align-items: center;
     box-sizing: border-box;
     padding: 10px;
-    font-size: 0.85rem;
+    // font-size: 0.85rem;
+    font-size: clamp(0.5rem, 1.4vw, 0.85rem);
+    white-space: nowrap;
     background: #222;
-    width: 155px;
+    min-width: 155px;
+    width: 15vw;
     height: 100%;
-    min-width: 145px;
     border: @default-border;
 }
 
@@ -236,7 +239,9 @@ input {
     align-items: center;
     box-sizing: border-box;
     color: white;
-    font-size: 0.85rem;
+    // font-size: 0.85rem;
+    font-size: clamp(0.5rem, 1.4vw, 0.85rem);
+    white-space: nowrap;
     padding: 10px 5px;
     cursor: pointer;
     height: 100%;
@@ -295,7 +300,7 @@ input {
 
 .dropdown-item {
     display: flex;
-    font-size: 12px;
+    font-size: 0.62em;
     align-items: center;
     padding: 8px;
     color: white;
@@ -432,6 +437,9 @@ input {
     background-color: #222;
     border: @default-border;
     height: calc(52px - 12px);
+    min-width: 500px;
+    max-width: 550px;
+    width: 60vw;
 
     select {
         padding: 0px;
@@ -471,7 +479,8 @@ input {
 
 .profile-dropdown {
     position: relative;
-    width: 180px;
+    width: 50%;
+    min-width: 180px;
     background: #222;
     transition: all 250ms ease;
 
@@ -482,9 +491,11 @@ input {
         color: white;
         padding: 10px 5px;
         cursor: pointer;
+        white-space: nowrap;
         // border: @default-border;
         text-align: center;
-        font-size: 0.85rem;
+        // font-size: 0.85rem;
+        font-size: clamp(0.5rem, 1.4vw, 0.85rem);
         transition: all 250ms ease;
     }
 
@@ -536,7 +547,7 @@ input {
         padding: 15px;
         color: white;
         cursor: pointer;
-        font-size: 0.85rem;
+        font-size: clamp(0.5rem, 1.4vw, 0.75rem);;
 
         // True checkerboard for 2-column grid (even/odd alternation)
         &:nth-child(4n + 1),
@@ -580,7 +591,8 @@ input {
 
 .user-dropdown {
     position: relative;
-    width: 145px;
+    width: 33.3%;
+    min-width: 165px;
     background: #222;
     transition: all 250ms ease;
 
@@ -593,7 +605,9 @@ input {
         cursor: pointer;
         // border: @default-border;
         text-align: center;
-        font-size: 0.85rem;
+        // font-size: 0.85rem;
+        font-size: clamp(0.5rem, 1.4vw, 0.85rem);
+        white-space: nowrap;
         transition: all 250ms ease;
     }
 
@@ -616,7 +630,7 @@ input {
             padding: 15px 5px;
             color: white;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
 
             &.selected-user {
                 background: #333;
