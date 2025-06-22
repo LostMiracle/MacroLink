@@ -481,27 +481,34 @@ function triggerMacro(name) {
 const LOCKED_MACROS = ["Reinforce", "Resupply"];
 
 function updateMacroDropdownState() {
-  const currentMacros = Array.from(
-    document.querySelectorAll("#macroGrid button")
-  ).map((btn) => btn.dataset.macro);
-
-  document.querySelectorAll("#macroDropdown .dropdown-item").forEach((item) => {
-    const macro = item.dataset.macro;
-    if (!macro) return;
-    if (currentMacros.includes(macro)) {
-      item.classList.add("disabled-macro");
-      item.setAttribute("aria-disabled", "true");
+  document.querySelectorAll('#macroDropdown .dropdown-item').forEach(item => {
+    const key = item.dataset.macro;
+    if (added.has(key)) {
+      item.classList.add('active-macro');
     } else {
-      item.classList.remove("disabled-macro");
-      item.removeAttribute("aria-disabled");
+      item.classList.remove('active-macro');
     }
   });
 }
 
 function selectMacro(label) {
+  // Toggle remove if already present
   const name = label;
   const macroGrid = document.getElementById("macroGrid");
-  if (!label || added.has(label) || macroGrid.children.length >= MAX_DYNAMIC)
+  if (added.has(name)) {
+    const existing = Array.from(macroGrid.children)
+      .find(w => w.querySelector("button")?.dataset.macro === name);
+    if (existing) {
+      macroGrid.removeChild(existing);
+      added.delete(name);
+      updateGridOffset();
+      updateMacroDropdownState();
+      const removeSound = document.getElementById("macroRemoveSound");
+      if (removeSound) removeSound.play().catch(() => {});
+    }
+    return;
+  }
+  if (!label || macroGrid.children.length >= MAX_DYNAMIC)
     return;
   const labelText = dynamicLabels[name] || name;
   const image = macroImages[name];
@@ -533,11 +540,7 @@ function selectMacro(label) {
       }
       macroGrid.removeChild(wrapper);
       added.delete(name);
-      // Re-enable the corresponding dropdown item
-      const item = document.querySelector(`.dropdown-item[data-macro="${name}"]`);
-      if (item) {
-        item.classList.remove("disabled-macro");
-      }
+      updateMacroDropdownState();
       macroRemovedDuringTimeout = true;
       // Restart the timer
       clearTimeout(removeTimeout);
@@ -569,6 +572,7 @@ function selectMacro(label) {
         document.querySelector(".dropdown-toggle").classList.remove("disabled");
         document.querySelector(".dropdown-selected").textContent = "Stratagems";
       }
+      updateMacroDropdownState();
     } else {
       triggerMacro(name);
     }

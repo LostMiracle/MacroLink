@@ -258,8 +258,7 @@ input {
   color: white;
   cursor: pointer;
 }
-.dropdown-item.disabled-macro {
-  pointer-events: none;
+.dropdown-item.active-macro {
   background-color: yellow !important;
   color: black !important;
 }
