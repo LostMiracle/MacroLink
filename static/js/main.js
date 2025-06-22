@@ -131,6 +131,16 @@ function loadProfileFromServer(selectEl) {
 
       data.macros.forEach(selectMacro);
       updateMacroDropdownState();
+      // Ensure toggle reflects new profile’s macro count
+      const toggleBtn = document.querySelector(".dropdown-toggle");
+      const toggleLabel = document.querySelector(".dropdown-selected");
+      if (macroGrid.children.length >= MAX_DYNAMIC) {
+        toggleBtn.classList.add("disabled");
+        toggleLabel.textContent = "Max Reached";
+      } else {
+        toggleBtn.classList.remove("disabled");
+        toggleLabel.textContent = "Stratagems";
+      }
     })
     .catch((err) => console.error("Loadout load failed", err));
 }
@@ -508,8 +518,13 @@ function selectMacro(label) {
     }
     return;
   }
-  if (!label || macroGrid.children.length >= MAX_DYNAMIC)
+  if (!label) return;
+
+  if (macroGrid.children.length >= MAX_DYNAMIC) {
+    const maxSound = document.getElementById("macroMaxSound");
+    if (maxSound) maxSound.play().catch(() => {});
     return;
+  }
   const labelText = dynamicLabels[name] || name;
   const image = macroImages[name];
   const hasImage = image && imageFiles.includes(image);
@@ -591,13 +606,6 @@ function selectMacro(label) {
   macroGrid.appendChild(wrapper);
   added.add(name);
 
-  // After adding, if we've reached the max, close dropdown and play sound
-  if (macroGrid.children.length >= MAX_DYNAMIC) {
-    const dropdown = document.getElementById("macroDropdown");
-    dropdown.classList.remove("show");
-    document.querySelector(".dropdown-toggle")?.classList.remove("open");
-    document.getElementById("macroMaxSound")?.play().catch(() => {});
-  }
 
   // const dropdown = document.getElementById("macroDropdown");
   // dropdown.classList.remove("show");
@@ -612,21 +620,29 @@ function selectMacro(label) {
 function toggleDropdown() {
   const row = document.querySelector(".dropdown-toggle");
   const list = document.getElementById("macroDropdown");
-
   const isDisabled = row.classList.contains("disabled");
+  const isOpen = list.classList.contains("show");
+
   if (isDisabled) {
-    document
-      .getElementById("macroMaxSound")
-      ?.play()
-      .catch(() => {});
+    if (isOpen) {
+      // Allow closing even when disabled
+      list.classList.remove("show");
+      row.classList.remove("open");
+      const menuSound = document.getElementById("macroMenuSound");
+      if (!suppressMenuSound && menuSound) menuSound.play().catch(() => {});
+    } else {
+      // Play error when trying to open at max
+      const maxSound = document.getElementById("macroMaxSound");
+      if (maxSound) maxSound.play().catch(() => {});
+    }
     return;
   }
 
-  const isOpen = list.classList.toggle("show");
-  row.classList.toggle("open", isOpen); // Add/remove open class on stratagem-row
-
-  const sound = document.getElementById("macroMenuSound");
-  if (!suppressMenuSound && sound) sound.play().catch(() => {});
+  // Normal toggle when not disabled
+  const newOpen = list.classList.toggle("show");
+  row.classList.toggle("open", newOpen);
+  const menuSound = document.getElementById("macroMenuSound");
+  if (!suppressMenuSound && menuSound) menuSound.play().catch(() => {});
 }
 
 function toggleProfileDropdown() {
