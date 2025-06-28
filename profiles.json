@@ -20,6 +20,17 @@
       "A-ARC-3_Tesla_Tower",
       "StA-X3_W.A.S.P._Launcher",
       "Eagle_500KG_Bomb"
+    ],
+    "bots": [
+      "Reinforce",
+      "Resupply",
+      "GL-52_De-Escalator",
+      "AX-AR-23_Guard_Dog",
+      "Orbital_Railcannon_Strike",
+      "E-AT-12_Anti-Tank_Emplacement",
+      "A-MLS-4X_Rocket_Sentry",
+      "A-M-12_Mortar_Sentry",
+      "A-M-23_EMS_Mortar_Sentry"
     ]
   },
   "user2": {
@@ -56,8 +67,36 @@
       "Eagle_Rearm",
       "Eagle_Napalm_Airstrike",
       "EXO-49_Emancipator_Exosuit",
+      "ARC-3_Arc_Thrower",
+      "LIFT-860_Hover_Pack",
+      "M-105_Stalwart"
+    ],
+    "scorched super earth": [
+      "Reinforce",
+      "Resupply",
+      "Eagle_Rearm",
+      "Orbital_Napalm_Barrage",
+      "Eagle_Napalm_Airstrike",
+      "AC-8_Autocannon",
+      "MD-8_Gas_Mines"
+    ],
+    "super memes": [
+      "Reinforce",
+      "Resupply",
+      "CQC-1_One_True_Flag",
+      "Orbital_Railcannon_Strike",
       "LIFT-850_Jump_Pack",
-      "LAS-99_Quasar_Cannon"
+      "A-G-16_Gatling_Sentry"
+    ],
+    "autobots": [
+      "Reinforce",
+      "Resupply",
+      "Eagle_Rearm",
+      "NUX-223_Hellbomb",
+      "StA-X3_W.A.S.P._Launcher",
+      "A-MLS-4X_Rocket_Sentry",
+      "A-M-12_Mortar_Sentry",
+      "E-AT-12_Anti-Tank_Emplacement"
     ]
   }
 }

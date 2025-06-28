@@ -60,6 +60,10 @@ select:focus {
     box-sizing: border-box;
     padding-right: 5px;
 
+    &.disabled {
+        background-color: darkred;
+    }
+
     span {
         transition: transform 250ms ease;
         transform: rotate(-90deg);
@@ -106,7 +110,7 @@ input {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    text-align: center;
+    // text-align: center;
     align-items: center;
     padding: 10px;
     flex-shrink: 0;
@@ -312,9 +316,9 @@ input {
     //     color: black !important;
     // }
     &.active-macro {
-    background-color: yellow !important;
-    color: black !important;
-}
+        background-color: yellow !important;
+        color: black !important;
+    }
 
     img {
         width: 64px;
@@ -373,12 +377,13 @@ input {
 
 .connection {
     margin-left: 16px;
-    z-index: 3;
+    z-index: 6;
     position: absolute;
     bottom: 0;
     left: 0;
     color: yellow;
     font-size: 8px;
+    
 
     span {
         font-size: 12px;
@@ -499,6 +504,12 @@ input {
         // font-size: 0.85rem;
         font-size: clamp(0.5rem, 1.4vw, 0.85rem);
         transition: all 250ms ease;
+        // --- Begin truncation properties ---
+        min-width: 0; // allow flex to shrink
+        overflow: hidden; // hide overflow
+        text-overflow: ellipsis; // show “...” for overflowed text
+        white-space: nowrap; // prevent wrapping
+        // --- End truncation properties ---
     }
 
     &.open {
@@ -518,7 +529,7 @@ input {
 
 .profile-list {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     position: fixed;
     top: 52px;
     left: 50%;
@@ -543,27 +554,44 @@ input {
 
     .profile-item {
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        // align-items: center;
         justify-content: space-between;
-        gap: 8px;
+        gap: 12px;
         padding: 15px;
         color: white;
         cursor: pointer;
-        font-size: clamp(0.5rem, 1.4vw, 0.75rem);;
+        font-size: clamp(0.5rem, 1.4vw, 0.75rem);
+        min-width: 0;
 
         // True checkerboard for 2-column grid (even/odd alternation)
-        &:nth-child(4n + 1),
-        &:nth-child(4n + 4) {
+        // &:nth-child(4n + 1),
+        // &:nth-child(4n + 4) {
+        //     background-color: rgba(255, 255, 255, 0.03);
+        // }
+
+        // &:nth-child(4n + 2),
+        // &:nth-child(4n + 3) {
+        //     background-color: rgba(255, 255, 255, 0.08);
+        // }
+
+        &:nth-child(odd) {
             background-color: rgba(255, 255, 255, 0.03);
         }
 
-        &:nth-child(4n + 2),
-        &:nth-child(4n + 3) {
+        &:nth-child(even) {
             background-color: rgba(255, 255, 255, 0.08);
         }
 
         .profile-name {
             flex-shrink: 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 0, 0.5);
+            white-space: nowrap;
+            /* never break lines */
+            overflow: hidden;
+            /* hide the excess */
+            text-overflow: ellipsis;
         }
 
         .profile-preview {
@@ -583,6 +611,10 @@ input {
             background: yellow;
             font-weight: bold;
             color: black;
+
+            .profile-name {
+                border-bottom: 1px solid #000;
+            }
         }
 
         &:hover {
@@ -731,5 +763,17 @@ input {
                 /* Green for confirm */
             }
         }
+    }
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover,
+    &:focus,
+    &:active {
+        color: inherit;
+        text-decoration: none;
     }
 }

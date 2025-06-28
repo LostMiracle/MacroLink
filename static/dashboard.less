@@ -1,0 +1,358 @@
+@font-face {
+    font-family: 'Protomolecule';
+    src: url('/static/fonts/Protomolecule.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+
+html {
+    font-size: 16px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Protomolecule', sans-serif;
+    margin: 0;
+    padding: 0;
+    align-content: center;
+}
+
+.margin-top-1rem {
+    margin-top: 1rem;
+}
+
+.margin-bottom-halfrem {
+    margin-bottom: 0.5rem;
+}
+
+body {
+    font-family: 'Protomolecule', sans-serif;
+    margin: 0;
+    background: #111;
+    color: #fff;
+    // width: calc(100vw - 4rem);
+    padding: 2rem;
+
+    .menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: #1a1a1a;
+        background-image: repeating-linear-gradient(315deg, #1a1a1a, #1a1a1a 5px, #4a4a4a 5px, #4A4A4D 8px);
+        padding: 10px;
+        width: calc(100vw - 1.25rem);
+        height: calc(62px - 20px);
+        z-index: 5;
+        h1 {
+            color: white;
+        }
+    }
+
+    .row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        a {
+            align-content: center;
+            padding: 10px;
+            color: yellow;
+            background-color: #222;
+            text-decoration: none;
+            align-self: center;
+            font-size: 0.85em;
+        }
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        // gap: 2rem;
+        margin-top: 2rem;
+        position: relative;
+        z-index: 4;
+
+        .row {
+            &:first-child {
+                // background: #1a1a1a;
+                background-image: repeating-linear-gradient(315deg, #1a1a1acc, #1a1a1acc 5px, #4a4a4a 5px, #4A4A4D 8px);
+                padding: 10px;
+            }
+
+            .restart {
+                all: unset; // removes all default styling
+                align-content: center;
+                background-color: #222;
+                color: tomato;
+                padding: 0.5rem; // remove default padding
+                margin: 0; // remove default margin
+                border: none; // remove default borders
+
+                cursor: pointer; // shows pointer on hover
+            }
+        }
+    }
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem 1rem;
+    width: calc(100vw - 7rem);
+    // background-color: #1a1a1a;
+
+    @media (max-width: 1045px) {
+        .row {
+            flex-wrap: wrap;
+
+            .card {
+                flex: 1 1 27%;
+                max-width: 100%;
+            }
+        }
+    }
+
+    .row {
+        gap: 1rem;
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25em;
+            width: 100%;
+        }
+    }
+
+    .column {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .card {
+        background: #1f1f1f9a;
+        border-radius: 0.5rem;
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.1);
+        min-width: calc(230px - 4rem);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        // @media (min-width: 1025px) {
+        //     min-width: calc(229px);
+        // }
+
+        .status-field {
+            color: rgb(169, 169, 169);
+
+            span {
+                font-family: @font-stack;
+                color: khaki;
+                font-size: 0.9em;
+            }
+        }
+    }
+
+    ul {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        list-style-type: none;
+        width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        max-height: 250px;
+        overflow-y: scroll;
+
+        @media (min-width: 1441px) {
+            grid-template-columns: repeat(8, 1fr);
+
+            li:nth-child(16n+1),
+            li:nth-child(16n+3),
+            li:nth-child(16n+5),
+            li:nth-child(16n+7),
+            li:nth-child(16n+10),
+            li:nth-child(16n+12),
+            li:nth-child(16n+14),
+            li:nth-child(16n+16) {
+                background-color: rgba(255, 255, 255, 0.03);
+            }
+
+            li:nth-child(16n+2),
+            li:nth-child(16n+4),
+            li:nth-child(16n+6),
+            li:nth-child(16n+8),
+            li:nth-child(16n+9),
+            li:nth-child(16n+11),
+            li:nth-child(16n+13),
+            li:nth-child(16n+15) {
+                background-color: rgba(255, 255, 255, 0.08);
+            }
+        }
+
+        @media (max-width: 1440px) {
+            grid-template-columns: repeat(4, 1fr);
+
+            li:nth-child(8n+1),
+            li:nth-child(8n+3),
+            li:nth-child(8n+6),
+            li:nth-child(8n+8) {
+                background-color: rgba(255, 255, 255, 0.03);
+            }
+
+            li:nth-child(8n+2),
+            li:nth-child(8n+4),
+            li:nth-child(8n+5),
+            li:nth-child(8n+7) {
+                background-color: rgba(255, 255, 255, 0.08);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            grid-template-columns: repeat(3, 1fr);
+
+            li:nth-child(odd) {
+                background-color: rgba(255, 255, 255, 0.03);
+            }
+
+            li:nth-child(even) {
+                background-color: rgba(255, 255, 255, 0.08);
+            }
+        }
+
+        @media (max-width: 768px) {
+            grid-template-columns: repeat(2, 1fr);
+
+            li:nth-child(4n+1),
+            li:nth-child(4n+4) {
+                background-color: rgba(255, 255, 255, 0.03);
+            }
+
+            li:nth-child(4n+2),
+            li:nth-child(4n+3) {
+                background-color: rgba(255, 255, 255, 0.08);
+            }
+        }
+
+        @media (max-width: 425px) {
+            grid-template-columns: repeat(1, 1fr);
+
+            li:nth-child(odd) {
+                background-color: rgba(255, 255, 255, 0.03);
+            }
+
+            li:nth-child(even) {
+                background-color: rgba(255, 255, 255, 0.08);
+            }
+        }
+
+        li {
+            font-family: @font-stack;
+            padding: 0.75rem;
+            background-color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: block;
+            max-width: 100%;
+            color: mediumaquamarine;
+            font-size: 0.75em;
+        }
+    }
+}
+
+.modal {
+    opacity: 0;
+    pointer-events: none;
+    display: flex !important; /* maintain layout structure */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+
+    &.visible {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+
+    .modal-content { /* unchanged */
+        background: #1f1f1f;
+        padding: 1.5rem 2rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        color: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.7);
+    }
+
+    .modal-buttons { /* unchanged */
+        margin-top: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+
+        button {
+            all: unset;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            background: #333;
+            color: yellow;
+            border-radius: 0.25rem;
+            transition: background 0.2s;
+            &:hover { background: #555; }
+        }
+    }
+}
+
+.grid {
+    background-image: url(/static/images/grid-bg.webp);
+    background-size: 5%;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    z-index: 0;
+    filter: blur(1px);
+}
+
+.logo {
+    background-image: url(/static/images/super-earth.webp);
+    background-repeat: no-repeat;
+    background-position: center 70%;
+    background-attachment: fixed;
+    background-size: 35%;
+    opacity: 0.15;
+    z-index: 1;
+    filter: blur(0.75px);
+}
+
+.background-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* ensures clicks pass through */
+}
+
+#tsparticles {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    filter: blur(0.5px);
+}

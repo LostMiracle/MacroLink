@@ -96,6 +96,7 @@ DYNAMIC_MACROS = {
     "MD-8_Gas_Mines": "MD-8 Gas Mines",
     "MD-6_Anti-Personnel_Minefield": "MD-6 Anti-Personnel Minefield",
     "MD-14_Incendiary_Mines": "MD-14 Incendiary Mines",
+    "Test-Macro": "Test Macro",
     # General Actions
     "SOS_Beacon": "SOS Beacon",
     "NUX-223_Hellbomb": "NUX-223 Hellbomb",
@@ -182,6 +183,7 @@ MACRO_IMAGES = {
     "MD-6_Anti-Personnel_Minefield": "MD-6_Anti-Personnel_Minefield.png",
     "MD-14_Incendiary_Mines": "MD-14_Incendiary_Mines.png",
     "NUX-223_Hellbomb": "NUX-223_Hellbomb.png",
+    "Test-Macro": "Test_Macro.png",
     # General Actions
     "SSSD_Delivery": "SSSD_Delivery.png",
     "Seismic_Probe": "Seismic_Probe.png",
@@ -193,7 +195,6 @@ MACRO_IMAGES = {
     "SEAF_Artillery": "SEAF_Artillery.png" 
 }
 
-# Border colors
 MACRO_STYLES = {
     "Orbital_Precision_Strike": {"border": "red"},
     "Orbital_Gatling_Barrage": {"border": "red"},
@@ -270,10 +271,15 @@ MACRO_STYLES = {
     "Seismic_Probe": {"border": "yellow"},
     "Upload_Data": {"border": "yellow"},
     "Eagle_Rearm": {"border": "yellow"},
+    "SEAF_Artillery": {"border": "yellow"},
     "GL-52_De-Escalator": {"border": "blue"},
     "AX_ARC-3_Guard_Dog_K9": {"border": "blue"},
-    "SEAF_Artillery": {"border": "yellow"}
+    "Test-Macro": {"border": "blue"}
+    
 }
+
+# Normalized macro names (lowercase key → readable value)
+NORMALIZED_MACROS = {k.lower(): v for k, v in {**DYNAMIC_MACROS, **STATIC_MACROS}.items()}
 
 def load_profiles():
     if not os.path.exists(PROFILE_PATH):
@@ -315,6 +321,36 @@ def index():
         macro_styles=MACRO_STYLES,
         image_files=existing_images
     )
+
+@app.route("/dashboard")
+def dashboard():
+    image_dir = Path(app.static_folder) / "images"
+    existing_images = [f.name for f in image_dir.glob("*.png")]
+    return render_template(
+        "dashboard.html",
+        static_macros=STATIC_MACROS,
+        dynamic_macros=DYNAMIC_MACROS,
+        normalized_macros=NORMALIZED_MACROS,
+        macro_images=MACRO_IMAGES,
+        macro_styles=MACRO_STYLES,
+        image_files=existing_images
+    )
+
+PICO_IPS = {
+    "green": "http://192.168.50.34:8888",
+    "blue": "http://192.168.50.35:8888"
+}
+
+@app.route("/dashboard/status.json")
+def combined_status():
+    results = {}
+    for pico_id, pico_url in PICO_IPS.items():
+        try:
+            r = requests.get(f"{pico_url}/system/status.json", timeout=2)
+            results[pico_id] = r.json()
+        except Exception as e:
+            results[pico_id] = {"error": str(e)}
+    return jsonify(results)
 
 @app.route("/trigger/<macro>")
 def trigger_macro(macro):
