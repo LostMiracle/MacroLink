@@ -569,6 +569,11 @@ input {
 .user-dropdown.open .user-selected {
   color: #000 !important;
 }
+.missing-macro {
+  background-color: rgba(139, 0, 0, 0.3) !important;
+  color: red !important;
+  pointer-events: none;
+}
 .modal {
   display: flex;
   position: fixed;

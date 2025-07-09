@@ -18,6 +18,7 @@ let timerInterval = null;
 let timeRemaining = 0;
 
 let suppressMenuSound = false;
+let hasHighlighted = false; //  Prevents double highlightMissingMacros calls
 
 const glowMap = {
   red: "rgba(255, 80, 80, 0.75)", // warmer coral-like glow
@@ -99,7 +100,63 @@ function selectUser(div, silent = false) {
     setTimeout(() => {
       suppressMenuSound = false;
     }, 100);
+    highlightMissingMacros();
   }
+}
+
+async function highlightMissingMacros() {
+    try {
+        const user = document.querySelector(".user-selected")?.dataset.user;
+        if (!user) {
+            console.log("[highlightMissingMacros] No user selected, skipping.");
+            return;
+        }
+
+        const userDeviceMap = {
+            "user1": "green",
+            "user2": "blue"
+        };
+        const device = userDeviceMap[user] || "green"; // default to green if unmapped
+        console.log(`[highlightMissingMacros] Scanning device '${device}' for user '${user}'`);
+
+        const res = await fetch("/dashboard/status.json");
+        const allData = await res.json();
+        const data = allData[device];
+
+        if (!data || data.error) {
+            console.warn(`[highlightMissingMacros] No data or error for device '${device}'`);
+            return;
+        }
+
+        const deviceMacroNames = new Set(
+            Object.keys(data.macros || {}).map(n => n.trim().toLowerCase())
+        );
+
+        document.querySelectorAll("#macroDropdown .dropdown-item").forEach(item => {
+            const key = item.dataset.macro?.trim().toLowerCase();
+            if (!key) {
+                item.classList.remove("missing-macro");
+                return;
+            }
+
+            const dynamicKeys = Object.keys(dynamicLabels).map(k => k.toLowerCase());
+            if (!dynamicKeys.includes(key)) {
+                item.classList.remove("missing-macro");
+                return;
+            }
+
+            if (deviceMacroNames.has(key)) {
+                item.classList.remove("missing-macro");
+                // console.log(`[highlightMissingMacros] Found on device: '${key}'`);
+            } else {
+                item.classList.add("missing-macro");
+                console.log(`[highlightMissingMacros] Missing on device: '${key}', marking as missing`);
+            }
+        });
+
+    } catch (err) {
+        console.error("[highlightMissingMacros] Error:", err);
+    }
 }
 
 function loadProfileList(user) {
@@ -491,12 +548,12 @@ function triggerMacro(name) {
 const LOCKED_MACROS = ["Reinforce", "Resupply"];
 
 function updateMacroDropdownState() {
-  document.querySelectorAll('#macroDropdown .dropdown-item').forEach(item => {
+  document.querySelectorAll("#macroDropdown .dropdown-item").forEach((item) => {
     const key = item.dataset.macro;
     if (added.has(key)) {
-      item.classList.add('active-macro');
+      item.classList.add("active-macro");
     } else {
-      item.classList.remove('active-macro');
+      item.classList.remove("active-macro");
     }
   });
 }
@@ -506,8 +563,9 @@ function selectMacro(label) {
   const name = label;
   const macroGrid = document.getElementById("macroGrid");
   if (added.has(name)) {
-    const existing = Array.from(macroGrid.children)
-      .find(w => w.querySelector("button")?.dataset.macro === name);
+    const existing = Array.from(macroGrid.children).find(
+      (w) => w.querySelector("button")?.dataset.macro === name
+    );
     if (existing) {
       macroGrid.removeChild(existing);
       added.delete(name);
@@ -605,7 +663,6 @@ function selectMacro(label) {
   wrapper.appendChild(button);
   macroGrid.appendChild(wrapper);
   added.add(name);
-
 
   // const dropdown = document.getElementById("macroDropdown");
   // dropdown.classList.remove("show");
@@ -744,7 +801,12 @@ window.onload = () => {
     const matchingUser = Array.from(
       document.querySelectorAll(".user-item")
     ).find((el) => el.dataset.user === storedUser);
-    if (matchingUser) selectUser(matchingUser, true); // ← pass true to avoid opening
+    if (matchingUser) {
+      selectUser(matchingUser, true); // silent load, no highlight
+      highlightMissingMacros(); // ← explicit, runs once on load
+    }
+  } else {
+    highlightMissingMacros(); // ← ensures it runs on first load if no user
   }
 
   if (macroGrid.children.length >= MAX_DYNAMIC) {
