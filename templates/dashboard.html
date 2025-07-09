@@ -14,143 +14,155 @@
     </div>
     <div class="container">
       <div class="dashboard" id="green-dashboard">
-        <div class="row">
+        <div class="row title" id="green-title">
           <h2 style="color: greenyellow">Green MacroLink</h2>
-          <button class="restart" id="green-restart">🔄 Reboot</button>
+          <div class="row">
+            <div class="status" id="green-status">Searching....</div>
+            <button class="restart" id="green-restart">🔄 Reboot</button>
+          </div>
         </div>
         <div id="green-error"></div>
-        <div class="row">
-          <div class="card">
-            <div class="status-field">
-              <strong>Safe Mode:</strong> <span id="green-safe_mode">–</span>
+        <div class="info" id="green-info">
+          <div class="row">
+            <div class="card">
+              <div class="status-field">
+                <strong>Safe Mode:</strong> <span id="green-safe_mode">–</span>
+              </div>
+              <div class="status-field">
+                <strong>Filesystem:</strong>
+                <span id="green-filesystem">–</span>
+              </div>
+              <div class="status-field">
+                <strong>USB Mode:</strong> <span id="green-usb_mode">–</span>
+              </div>
+              <div class="status-field">
+                <strong>Version:</strong> <span id="green-version">–</span>
+              </div>
             </div>
-            <div class="status-field">
-              <strong>Filesystem:</strong> <span id="green-filesystem">–</span>
+            <div class="card">
+              <div class="status-field">
+                <strong>RSSI:</strong> <span id="green-rssi">–</span>
+              </div>
+              <div class="status-field">
+                <strong>IP:</strong> <span id="green-ip">–</span>
+              </div>
+              <div class="status-field">
+                <strong>MAC:</strong> <span id="green-mac">–</span>
+              </div>
+              <div class="status-field">
+                <strong>HTTP Requests:</strong>
+                <span id="green-http_requests">–</span>
+              </div>
             </div>
-            <div class="status-field">
-              <strong>USB Mode:</strong> <span id="green-usb_mode">–</span>
+            <div class="card">
+              <div class="status-field">
+                <strong>CPU Temp:</strong> <span id="green-cpu_temp">–</span> °C
+              </div>
+              <div class="status-field">
+                <strong>Uptime:</strong> <span id="green-uptime">–</span>
+              </div>
             </div>
-            <div class="status-field">
-              <strong>Version:</strong> <span id="green-version">–</span>
+            <div class="card">
+              <div class="status-field">
+                <strong>Memory Used:</strong>
+                <span id="green-memory_used">–</span>
+              </div>
+              <div class="status-field">
+                <strong>Memory Free:</strong>
+                <span id="green-memory_free">–</span>
+              </div>
+              <div class="status-field">
+                <strong>Memory % Used:</strong>
+                <span id="green-memory_percent">–</span>%
+              </div>
             </div>
           </div>
           <div class="card">
             <div class="status-field">
-              <strong>RSSI:</strong> <span id="green-rssi">–</span>
+              <strong>Last Macro:</strong>
+              <span id="green-last_macro_ts">–</span>
             </div>
             <div class="status-field">
-              <strong>IP:</strong> <span id="green-ip">–</span>
+              <strong>Macros:</strong>
+              <ul id="green-macros"></ul>
             </div>
-            <div class="status-field">
-              <strong>MAC:</strong> <span id="green-mac">–</span>
-            </div>
-            <div class="status-field">
-              <strong>HTTP Requests:</strong>
-              <span id="green-http_requests">–</span>
-            </div>
-          </div>
-          <div class="card">
-            <div class="status-field">
-              <strong>CPU Temp:</strong> <span id="green-cpu_temp">–</span> °C
-            </div>
-            <div class="status-field">
-              <strong>Uptime:</strong> <span id="green-uptime">–</span>
-            </div>
-          </div>
-          <div class="card">
-            <div class="status-field">
-              <strong>Memory Used:</strong>
-              <span id="green-memory_used">–</span>
-            </div>
-            <div class="status-field">
-              <strong>Memory Free:</strong>
-              <span id="green-memory_free">–</span>
-            </div>
-            <div class="status-field">
-              <strong>Memory % Used:</strong>
-              <span id="green-memory_percent">–</span>%
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="status-field">
-            <strong>Last Macro:</strong> <span id="green-last_macro_ts">–</span>
-          </div>
-          <div class="status-field">
-            <strong>Macros:</strong>
-            <ul id="green-macros"></ul>
           </div>
         </div>
       </div>
       <!-- Start of blue unit dashboard -->
       <div class="dashboard" id="blue-dashboard">
-        <div class="row">
+        <div class="row title" id="blue-title">
           <h2 style="color: lightskyblue">Blue MacroLink</h2>
-          <button class="restart" id="blue-restart">🔄 Reboot</button>
+          <di class="row">
+            <div class="status" id="blue-status">Searching...</div>
+            <button class="restart" id="blue-restart">🔄 Reboot</button>
+          </di>
         </div>
         <div id="blue-error"></div>
-        <div class="row">
-          <div class="card">
-            <div class="status-field">
-              <strong>Safe Mode:</strong> <span id="blue-safe_mode">–</span>
+        <div class="info" id="blue-info">
+          <div class="row">
+            <div class="card">
+              <div class="status-field">
+                <strong>Safe Mode:</strong> <span id="blue-safe_mode">–</span>
+              </div>
+              <div class="status-field">
+                <strong>Filesystem:</strong> <span id="blue-filesystem">–</span>
+              </div>
+              <div class="status-field">
+                <strong>USB Mode:</strong> <span id="blue-usb_mode">–</span>
+              </div>
+              <div class="status-field">
+                <strong>Version:</strong> <span id="blue-version">–</span>
+              </div>
             </div>
-            <div class="status-field">
-              <strong>Filesystem:</strong> <span id="blue-filesystem">–</span>
+            <div class="card">
+              <div class="status-field">
+                <strong>RSSI:</strong> <span id="blue-rssi">–</span>
+              </div>
+              <div class="status-field">
+                <strong>IP:</strong> <span id="blue-ip">–</span>
+              </div>
+              <div class="status-field">
+                <strong>MAC:</strong> <span id="blue-mac">–</span>
+              </div>
+              <div class="status-field">
+                <strong>HTTP Requests:</strong>
+                <span id="blue-http_requests">–</span>
+              </div>
             </div>
-            <div class="status-field">
-              <strong>USB Mode:</strong> <span id="blue-usb_mode">–</span>
+            <div class="card">
+              <div class="status-field">
+                <strong>CPU Temp:</strong> <span id="blue-cpu_temp">–</span> °C
+              </div>
+              <div class="status-field">
+                <strong>Uptime:</strong> <span id="blue-uptime">–</span>
+              </div>
             </div>
-            <div class="status-field">
-              <strong>Version:</strong> <span id="blue-version">–</span>
+            <div class="card">
+              <div class="status-field">
+                <strong>Memory Used:</strong>
+                <span id="blue-memory_used">–</span>
+              </div>
+              <div class="status-field">
+                <strong>Memory Free:</strong>
+                <span id="blue-memory_free">–</span>
+              </div>
+              <div class="status-field">
+                <strong>Memory % Used:</strong>
+                <span id="blue-memory_percent">–</span>%
+              </div>
             </div>
           </div>
           <div class="card">
             <div class="status-field">
-              <strong>RSSI:</strong> <span id="blue-rssi">–</span>
+              <strong>Last Macro:</strong> <span id="blue-last_macro_ts">–</span>
             </div>
             <div class="status-field">
-              <strong>IP:</strong> <span id="blue-ip">–</span>
+              <div class="margin-top-1rem margin-bottom-halfrem">
+                <strong>Macros:</strong>
+              </div>
+              <ul id="blue-macros"></ul>
             </div>
-            <div class="status-field">
-              <strong>MAC:</strong> <span id="blue-mac">–</span>
-            </div>
-            <div class="status-field">
-              <strong>HTTP Requests:</strong>
-              <span id="blue-http_requests">–</span>
-            </div>
-          </div>
-          <div class="card">
-            <div class="status-field">
-              <strong>CPU Temp:</strong> <span id="blue-cpu_temp">–</span> °C
-            </div>
-            <div class="status-field">
-              <strong>Uptime:</strong> <span id="blue-uptime">–</span>
-            </div>
-          </div>
-          <div class="card">
-            <div class="status-field">
-              <strong>Memory Used:</strong>
-              <span id="blue-memory_used">–</span>
-            </div>
-            <div class="status-field">
-              <strong>Memory Free:</strong>
-              <span id="blue-memory_free">–</span>
-            </div>
-            <div class="status-field">
-              <strong>Memory % Used:</strong>
-              <span id="blue-memory_percent">–</span>%
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="status-field">
-            <strong>Last Macro:</strong> <span id="blue-last_macro_ts">–</span>
-          </div>
-          <div class="status-field">
-            <div class="margin-top-1rem margin-bottom-halfrem">
-              <strong>Macros:</strong>
-            </div>
-            <ul id="blue-macros"></ul>
           </div>
         </div>
       </div>
@@ -159,8 +171,8 @@
       <div class="modal-content">
         <p id="confirmMessage"></p>
         <div class="modal-buttons">
-          <button id="confirmYes">Confirm</button>
           <button id="confirmNo">Cancel</button>
+          <button id="confirmYes">Confirm</button>
         </div>
       </div>
     </div>
@@ -198,6 +210,19 @@
           },
         });
       })();
+    </script>
+    <script>
+      document.getElementById("green-title").addEventListener("click", (e) => {
+        // prevent toggle if a button inside was clicked
+        if (e.target.closest("button")) return;
+        const greenInfo = document.getElementById("green-info");
+        greenInfo.classList.toggle("expanded");
+      });
+      document.getElementById("blue-title").addEventListener("click", (e) => {
+        if (e.target.closest("button")) return;
+        const blueInfo = document.getElementById("blue-info");
+        blueInfo.classList.toggle("expanded");
+      });
     </script>
     <script>
       const STATIC_MACROS = {{ static_macros|tojson }};

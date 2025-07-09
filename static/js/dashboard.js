@@ -118,8 +118,40 @@ async function pollAll() {
   }
 }
 
-window.addEventListener("load", pollAll);
-setInterval(pollAll, 10000);
+async function pingDevice(id, ip) {
+  const statusEl = document.getElementById(`${id}-status`);
+  try {
+    const res = await fetch(`http://${ip}:8888/`, {
+      method: "GET",
+      cache: "no-store",
+      mode: "no-cors",
+    });
+    if (res.ok || res.status === 0) {
+      // status 0 for no-cors mode
+      statusEl.textContent = "🟢 Online";
+      statusEl.style.color = "greenyellow";
+    } else {
+      statusEl.textContent = "🔴 Offline";
+      statusEl.style.color = "tomato";
+    }
+  } catch {
+    statusEl.textContent = "🔴 Offline";
+    statusEl.style.color = "tomato";
+  }
+}
+
+function startPingLoop() {
+  setInterval(() => {
+    pingDevice("green", "192.168.50.34");
+    pingDevice("blue", "192.168.50.35");
+  }, 10000);
+}
+
+window.addEventListener("load", () => {
+  pollAll();
+  startPingLoop();
+  setInterval(pollAll, 10000);
+});
 
 function openConfirmModal(message, onConfirm) {
   const modal = document.getElementById("confirmModal");
