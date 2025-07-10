@@ -4,33 +4,34 @@
       "Reinforce",
       "Resupply",
       "Eagle_500KG_Bomb",
-      "Eagle_Napalm_Airstrike",
       "EXO-49_Emancipator_Exosuit",
-      "Eagle_Rearm",
-      "Orbital_Gas_Strike",
       "GL-52_De-Escalator",
       "MD-8_Gas_Mines",
-      "Orbital_Napalm_Barrage"
+      "Orbital_Napalm_Barrage",
+      "NUX-223_Hellbomb",
+      "Seismic_Probe",
+      "AX-TX-13_Guard_Dog_Dog_Breath"
     ],
     "squid": [
       "Reinforce",
       "Resupply",
       "Orbital_Napalm_Barrage",
-      "LAS-98_Laser_Cannon",
       "A-ARC-3_Tesla_Tower",
       "StA-X3_W.A.S.P._Launcher",
-      "Eagle_500KG_Bomb"
+      "Eagle_500KG_Bomb",
+      "AX-TX-13_Guard_Dog_Dog_Breath"
     ],
     "bots": [
       "Reinforce",
       "Resupply",
-      "GL-52_De-Escalator",
-      "AX-AR-23_Guard_Dog",
-      "Orbital_Railcannon_Strike",
       "E-AT-12_Anti-Tank_Emplacement",
       "A-MLS-4X_Rocket_Sentry",
       "A-M-12_Mortar_Sentry",
-      "A-M-23_EMS_Mortar_Sentry"
+      "A-M-23_EMS_Mortar_Sentry",
+      "FAF-14_Spear_Launcher",
+      "B-100_Portable_Hellbomb",
+      "GL-52_De-Escalator",
+      "Eagle_500KG_Bomb"
     ]
   },
   "user2": {
@@ -59,17 +60,19 @@
       "Eagle_Napalm_Airstrike",
       "StA-X3_W.A.S.P._Launcher",
       "EXO-49_Emancipator_Exosuit",
-      "MD-8_Gas_Mines"
+      "MD-8_Gas_Mines",
+      "Orbital_Gatling_Barrage",
+      "GR-8_Recoilless_Rifle"
     ],
     "jump trooper": [
       "Reinforce",
       "Resupply",
       "Eagle_Rearm",
-      "Eagle_Napalm_Airstrike",
       "EXO-49_Emancipator_Exosuit",
-      "ARC-3_Arc_Thrower",
       "LIFT-860_Hover_Pack",
-      "M-105_Stalwart"
+      "GL-21_Grenade_Launcher",
+      "Orbital_Gatling_Barrage",
+      "Eagle_Napalm_Airstrike"
     ],
     "scorched super earth": [
       "Reinforce",
@@ -95,7 +98,7 @@
       "NUX-223_Hellbomb",
       "StA-X3_W.A.S.P._Launcher",
       "A-MLS-4X_Rocket_Sentry",
-      "A-M-12_Mortar_Sentry",
+      "A-AC-8_Autocannon_Sentry",
       "E-AT-12_Anti-Tank_Emplacement"
     ]
   }

@@ -96,7 +96,6 @@ DYNAMIC_MACROS = {
     "MD-8_Gas_Mines": "MD-8 Gas Mines",
     "MD-6_Anti-Personnel_Minefield": "MD-6 Anti-Personnel Minefield",
     "MD-14_Incendiary_Mines": "MD-14 Incendiary Mines",
-    "Test-Macro": "Test Macro",
     # General Actions
     "SOS_Beacon": "SOS Beacon",
     "NUX-223_Hellbomb": "NUX-223 Hellbomb",
@@ -104,6 +103,9 @@ DYNAMIC_MACROS = {
     "Seismic_Probe": "Seismic Probe",
     "Upload_Data": "Upload Data",
     "Eagle_Rearm": "Eagle Rearm",
+    "Hive_Breaker_Drill": "Hive Breaker Drill",
+    "Prospecting_Drill": "Prospecting Drill",
+    "Super_Earth_Flag": "Super Earth Flag",
     "SEAF_Artillery": "SEAF Artillery"
 }
 
@@ -183,7 +185,6 @@ MACRO_IMAGES = {
     "MD-6_Anti-Personnel_Minefield": "MD-6_Anti-Personnel_Minefield.png",
     "MD-14_Incendiary_Mines": "MD-14_Incendiary_Mines.png",
     "NUX-223_Hellbomb": "NUX-223_Hellbomb.png",
-    "Test-Macro": "Test_Macro.png",
     # General Actions
     "SSSD_Delivery": "SSSD_Delivery.png",
     "Seismic_Probe": "Seismic_Probe.png",
@@ -192,6 +193,9 @@ MACRO_IMAGES = {
     "Reinforce": "redeploy.png",
     "Resupply": "resupply.png",
     "SOS_Beacon": "sos.png",
+    "Hive_Breaker_Drill": "Hive_Breaker_Drill.png",
+    "Prospecting_Drill": "Prospecting_Drill.png",
+    "Super_Earth_Flag": "Super_Earth_Flag.png",
     "SEAF_Artillery": "SEAF_Artillery.png" 
 }
 
@@ -274,7 +278,9 @@ MACRO_STYLES = {
     "SEAF_Artillery": {"border": "yellow"},
     "GL-52_De-Escalator": {"border": "blue"},
     "AX_ARC-3_Guard_Dog_K9": {"border": "blue"},
-    "Test-Macro": {"border": "blue"}
+    "Hive_Breaker_Drill": {"border": "yellow"},
+    "Prospecting_Drill": {"border": "yellow"},
+    "Super_Earth_Flag": {"border": "yellow"},
     
 }
 
