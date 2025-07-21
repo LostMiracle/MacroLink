@@ -56,6 +56,7 @@ DYNAMIC_MACROS = {
     "FLAM-40_Flamethrower": "FLAM-40 Flamethrower",
     "LAS-98_Laser_Cannon": "LAS-98 Laser Cannon",
     "LAS-99_Quasar_Cannon": "LAS-99 Quasar Cannon",
+    "PLAS-45_Epoch": "PLAS-45 Epoch",
     "ARC-3_Arc_Thrower": "ARC-3 Arc Thrower",
     "MLS-4X_Commando": "MLS-4X Commando",
     "EAT-17_Expendable_Anti-Tank": "EAT-17 Expendable Anti-Tank",
@@ -65,13 +66,14 @@ DYNAMIC_MACROS = {
     "StA-X3_W.A.S.P._Launcher": "StA-X3 W.A.S.P. Launcher",
     "GR-8_Recoilless_Rifle": "GR-8 Recoilless Rifle",
     # Support Equipment
+    "LIFT-860_Hover_Pack": "LIFT-860 Hover Pack",
+    "LIFT-850_Jump_Pack": "LIFT-850 Jump Pack",
+    "LIFT-182_Warp_Pack": "LIFT-182 Warp Pack",
     "SH-32_Shield_Generator_Pack": "SH-32 Shield Generator Pack",
     "SH-51_Directional_Shield_Backpack": "SH-51 Directional Shield Backpack",
     "SH-20_Ballistic_Shield_Backpack": "SH-20 Ballistic Shield Backpack",
-    "LIFT-860_Hover_Pack": "LIFT-860 Hover Pack",
     "B-1_Supply_Pack": "B-1 Supply Pack",
     "B-100_Portable_Hellbomb": "B-100 Portable Hellbomb",
-    "LIFT-850_Jump_Pack": "LIFT-850 Jump Pack",
     "AX-AR-23_Guard_Dog": "AX/AR-23 'Guard Dog'",
     "AX-LAS-5_Guard_Dog_Rover": "AX/LAS-5 'Guard Dog' Rover",
     "AX-TX-13_Guard_Dog_Dog_Breath": "AX/TX-13 'Guard Dog' Dog Breath",
@@ -84,6 +86,7 @@ DYNAMIC_MACROS = {
     "A-MG-43_Machine_Gun_Sentry": "A/MG-43 Machine Gun Sentry",
     "E-FLAM-40_Flame_Sentry": "E/FLAM-40 Flame Sentry",
     "A-MLS-4X_Rocket_Sentry": "A/MLS-4X Rocket Sentry",
+    "A-LAS-98_Laser_Sentry": "A/LAS-98 Laser Sentry",
     "A-AC-8_Autocannon_Sentry": "A/AC-8 Autocannon Sentry",
     "A-M-23_EMS_Mortar_Sentry": "A/M-23 EMS Mortar Sentry",
     "A-M-12_Mortar_Sentry": "A/M-12 Mortar Sentry",
@@ -196,7 +199,11 @@ MACRO_IMAGES = {
     "Hive_Breaker_Drill": "Hive_Breaker_Drill.png",
     "Prospecting_Drill": "Prospecting_Drill.png",
     "Super_Earth_Flag": "Super_Earth_Flag.png",
-    "SEAF_Artillery": "SEAF_Artillery.png" 
+    "SEAF_Artillery": "SEAF_Artillery.png",
+    # Control Group
+    "PLAS-45_Epoch": "Epoch.png",
+    "LIFT-182_Warp_Pack": "Warp_Pack.png",
+    "A-LAS-98_Laser_Sentry": "Laser_Sentry.png"
 }
 
 MACRO_STYLES = {
@@ -281,7 +288,10 @@ MACRO_STYLES = {
     "Hive_Breaker_Drill": {"border": "yellow"},
     "Prospecting_Drill": {"border": "yellow"},
     "Super_Earth_Flag": {"border": "yellow"},
-    
+    # Control Group
+    "PLAS-45_Epoch": {"border": "blue"},
+    "LIFT-182_Warp_Pack": {"border": "blue"},
+    "A-LAS-98_Laser_Sentry": {"border": "green"}
 }
 
 # Normalized macro names (lowercase key → readable value)
