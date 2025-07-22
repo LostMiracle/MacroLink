@@ -56,6 +56,16 @@ async function pollAll() {
       document.getElementById(prefix + "uptime").textContent = formatUptime(
         data.uptime
       );
+      if (
+        data.last_server_recovery &&
+        typeof data.last_server_recovery === "number"
+      ) {
+        const recAgo = formatUptime(data.uptime - data.last_server_recovery);
+        document.getElementById(prefix + "lastrecovery").textContent =
+          recAgo + " ago";
+      } else {
+        document.getElementById(prefix + "lastrecovery").textContent = "none";
+      }
       document.getElementById(prefix + "http_requests").textContent =
         data.http_requests;
       document.getElementById(prefix + "memory_used").textContent = formatBytes(
