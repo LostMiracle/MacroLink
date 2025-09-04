@@ -6,42 +6,59 @@
       "EXO-49_Emancipator_Exosuit",
       "GL-52_De-Escalator",
       "MD-8_Gas_Mines",
-      "Orbital_Napalm_Barrage",
       "NUX-223_Hellbomb",
-      "Seismic_Probe",
-      "AX-TX-13_Guard_Dog_Dog_Breath",
-      "Orbital_Laser"
+      "Orbital_Laser",
+      "LIFT-182_Warp_Pack",
+      "MD-14_Incendiary_Mines",
+      "Orbital_Napalm_Barrage"
     ],
     "squid": [
       "Reinforce",
       "Resupply",
-      "Orbital_Napalm_Barrage",
-      "A-ARC-3_Tesla_Tower",
-      "StA-X3_W.A.S.P._Launcher",
-      "Eagle_500KG_Bomb",
+      "NUX-223_Hellbomb",
+      "MD-8_Gas_Mines",
       "AX-TX-13_Guard_Dog_Dog_Breath",
-      "NUX-223_Hellbomb"
+      "FLAM-40_Flamethrower",
+      "Orbital_Gas_Strike"
     ],
     "bots": [
       "Reinforce",
       "Resupply",
-      "E-AT-12_Anti-Tank_Emplacement",
-      "Eagle_500KG_Bomb",
       "GR-8_Recoilless_Rifle",
       "Orbital_Laser",
-      "Orbital_Napalm_Barrage",
       "Orbital_380MM_HE_Barrage",
       "NUX-223_Hellbomb",
-      "A-M-12_Mortar_Sentry"
+      "A-MLS-4X_Rocket_Sentry",
+      "Orbital_Railcannon_Strike",
+      "FX-12_Shield_Generator_Relay",
+      "Orbital_Napalm_Barrage"
     ],
-    "bot blitz": [
+    "zap": [
       "Reinforce",
       "Resupply",
-      "E-AT-12_Anti-Tank_Emplacement",
+      "GL-52_De-Escalator",
+      "Orbital_Laser",
+      "AX_ARC-3_Guard_Dog_K9",
+      "A-ARC-3_Tesla_Tower",
+      "NUX-223_Hellbomb",
+      "EXO-49_Emancipator_Exosuit",
+      "A-M-23_EMS_Mortar_Sentry"
+    ],
+    "gas": [
+      "Reinforce",
+      "Resupply",
+      "MD-8_Gas_Mines",
+      "Orbital_Gas_Strike",
+      "AX-TX-13_Guard_Dog_Dog_Breath",
+      "TX-14_Sterilizer"
+    ],
+    "bug caves": [
+      "Reinforce",
+      "Resupply",
       "Eagle_500KG_Bomb",
       "GR-8_Recoilless_Rifle",
       "Orbital_Laser",
-      "Orbital_Railcannon_Strike"
+      "Orbital_Napalm_Barrage"
     ]
   },
   "user2": {
@@ -79,10 +96,12 @@
       "Resupply",
       "Eagle_Rearm",
       "EXO-49_Emancipator_Exosuit",
-      "LIFT-860_Hover_Pack",
       "GL-21_Grenade_Launcher",
       "MD-8_Gas_Mines",
-      "AX-TX-13_Guard_Dog_Dog_Breath"
+      "LIFT-182_Warp_Pack",
+      "Orbital_Gatling_Barrage",
+      "Orbital_Napalm_Barrage",
+      "GR-8_Recoilless_Rifle"
     ],
     "scorched super earth": [
       "Reinforce",
@@ -106,11 +125,11 @@
       "Resupply",
       "Eagle_Rearm",
       "NUX-223_Hellbomb",
+      "GR-8_Recoilless_Rifle",
       "A-MLS-4X_Rocket_Sentry",
-      "StA-X3_W.A.S.P._Launcher",
-      "Orbital_Laser",
-      "A-AC-8_Autocannon_Sentry",
-      "GR-8_Recoilless_Rifle"
+      "FX-12_Shield_Generator_Relay",
+      "Orbital_Railcannon_Strike",
+      "Orbital_Laser"
     ],
     "squids": [
       "Reinforce",
@@ -135,6 +154,57 @@
       "Orbital_380MM_HE_Barrage",
       "Orbital_Napalm_Barrage",
       "A-M-12_Mortar_Sentry"
+    ],
+    "candy": [
+      "Reinforce",
+      "Resupply",
+      "Eagle_Rearm",
+      "MD-14_Incendiary_Mines",
+      "MD-6_Anti-Personnel_Minefield",
+      "MD-8_Gas_Mines",
+      "E-AT-12_Anti-Tank_Emplacement"
+    ],
+    "lulz": [
+      "Reinforce",
+      "Resupply",
+      "Orbital_Railcannon_Strike",
+      "Orbital_Napalm_Barrage",
+      "GR-8_Recoilless_Rifle",
+      "Orbital_Gatling_Barrage",
+      "Orbital_Airburst_Strike"
+    ],
+    "stinky": [
+      "Reinforce",
+      "Resupply",
+      "Orbital_Gas_Strike",
+      "MD-8_Gas_Mines",
+      "AX-TX-13_Guard_Dog_Dog_Breath",
+      "FLAM-40_Flamethrower",
+      "TX-14_Sterilizer",
+      "GL-21_Grenade_Launcher"
+    ],
+    "fizzy": [
+      "Reinforce",
+      "Resupply",
+      "Orbital_EMS_Strike",
+      "AX-TX-13_Guard_Dog_Dog_Breath",
+      "A-ARC-3_Tesla_Tower",
+      "GL-52_De-Escalator",
+      "AX-AR-23_Guard_Dog",
+      "A-M-23_EMS_Mortar_Sentry",
+      "SH-32_Shield_Generator_Pack",
+      "B-1_Supply_Pack"
+    ],
+    "cred farming": [
+      "Reinforce",
+      "Resupply",
+      "LAS-99_Quasar_Cannon",
+      "LIFT-182_Warp_Pack",
+      "Orbital_Gas_Strike",
+      "EXO-49_Emancipator_Exosuit",
+      "EXO-45_Patriot_Exosuit",
+      "LIFT-850_Jump_Pack",
+      "GL-21_Grenade_Launcher"
     ]
   }
 }

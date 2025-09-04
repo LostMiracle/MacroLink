@@ -151,10 +151,17 @@ async function pingDevice(id, ip) {
 }
 
 function startPingLoop() {
-  setInterval(() => {
+  // First ping after 1 second
+  setTimeout(() => {
     pingDevice("green", "192.168.50.34");
     pingDevice("blue", "192.168.50.35");
-  }, 10000);
+
+    // Then ping every 60 seconds
+    setInterval(() => {
+      pingDevice("green", "192.168.50.34");
+      pingDevice("blue", "192.168.50.35");
+    }, 60000);
+  }, 1000);
 }
 
 window.addEventListener("load", () => {

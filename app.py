@@ -59,12 +59,15 @@ DYNAMIC_MACROS = {
     "PLAS-45_Epoch": "PLAS-45 Epoch",
     "ARC-3_Arc_Thrower": "ARC-3 Arc Thrower",
     "MLS-4X_Commando": "MLS-4X Commando",
+    "S-11_Speargun": "S-11 Speargun",
     "EAT-17_Expendable_Anti-Tank": "EAT-17 Expendable Anti-Tank",
+    "EAT-700_Expendable_Napalm": "EAT-700 Expendable Napalm",
     "AC-8_Autocannon": "AC-8 Autocannon",
     "RL-77_Airburst_Rocket_Launcher": "RL-77 Airburst Rocket Launcher",
     "FAF-14_Spear_Launcher": "FAF-14 Spear Launcher",
     "StA-X3_W.A.S.P._Launcher": "StA-X3 W.A.S.P. Launcher",
     "GR-8_Recoilless_Rifle": "GR-8 Recoilless Rifle",
+    "MS-11_Solo_Silo": "MS-11 Solo Silo",
     # Support Equipment
     "LIFT-860_Hover_Pack": "LIFT-860 Hover Pack",
     "LIFT-850_Jump_Pack": "LIFT-850 Jump Pack",
@@ -203,7 +206,11 @@ MACRO_IMAGES = {
     # Control Group
     "PLAS-45_Epoch": "Epoch.png",
     "LIFT-182_Warp_Pack": "Warp_Pack.png",
-    "A-LAS-98_Laser_Sentry": "Laser_Sentry.png"
+    "A-LAS-98_Laser_Sentry": "Laser_Sentry.png",
+    # Dust Devils
+    "S-11_Speargun": "nyi.png",
+    "EAT-700_Expendable_Napalm": "nyi.png",
+    "MS-11_Solo_Silo": "nyi.png"
 }
 
 MACRO_STYLES = {
@@ -291,7 +298,11 @@ MACRO_STYLES = {
     # Control Group
     "PLAS-45_Epoch": {"border": "blue"},
     "LIFT-182_Warp_Pack": {"border": "blue"},
-    "A-LAS-98_Laser_Sentry": {"border": "green"}
+    "A-LAS-98_Laser_Sentry": {"border": "green"},
+    # Dust Devils
+    "S-11_Speargun": {"border": "blue"},
+    "EAT-700_Expendable_Napalm": {"border": "blue"},
+    "MS-11_Solo_Silo": {"border": "blue"}
 }
 
 # Normalized macro names (lowercase key → readable value)
@@ -488,9 +499,9 @@ def rename_profile():
         save_profiles(profiles)
         return jsonify({'status': 'renamed', 'from': old_name, 'to': new_name})
     
-@app.route('/macros.json')
-def serve_macros():
-    return send_from_directory("static/json", "macros.json")
+# @app.route('/macros.json')
+# def serve_macros():
+#     return send_from_directory("static/json", "macros.json")
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8888)
