@@ -208,9 +208,9 @@ MACRO_IMAGES = {
     "LIFT-182_Warp_Pack": "Warp_Pack.png",
     "A-LAS-98_Laser_Sentry": "Laser_Sentry.png",
     # Dust Devils
-    "S-11_Speargun": "nyi.png",
-    "EAT-700_Expendable_Napalm": "nyi.png",
-    "MS-11_Solo_Silo": "nyi.png"
+    "S-11_Speargun": "Speargun.png",
+    "EAT-700_Expendable_Napalm": "Expendable_Napalm.png",
+    "MS-11_Solo_Silo": "Solo_Silo.png"
 }
 
 MACRO_STYLES = {
