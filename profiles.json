@@ -16,11 +16,11 @@
       "Reinforce",
       "Resupply",
       "NUX-223_Hellbomb",
-      "Orbital_Gatling_Barrage",
       "GR-8_Recoilless_Rifle",
-      "Orbital_Laser",
-      "A-ARC-3_Tesla_Tower",
-      "A-MLS-4X_Rocket_Sentry"
+      "Orbital_Napalm_Barrage",
+      "Orbital_380MM_HE_Barrage",
+      "Eagle_Cluster_Bomb",
+      "Eagle_Rearm"
     ],
     "bots": [
       "Reinforce",
@@ -43,7 +43,8 @@
       "A-ARC-3_Tesla_Tower",
       "NUX-223_Hellbomb",
       "EXO-49_Emancipator_Exosuit",
-      "A-M-23_EMS_Mortar_Sentry"
+      "A-M-23_EMS_Mortar_Sentry",
+      "GR-8_Recoilless_Rifle"
     ],
     "gas": [
       "Reinforce",
@@ -52,9 +53,9 @@
       "Orbital_Gas_Strike",
       "AX-TX-13_Guard_Dog_Dog_Breath",
       "TX-14_Sterilizer",
-      "EXO-49_Emancipator_Exosuit",
-      "A-G-16_Gatling_Sentry",
-      "FLAM-40_Flamethrower"
+      "FLAM-40_Flamethrower",
+      "S-11_Speargun",
+      "B-1_Supply_Pack"
     ],
     "bug caves": [
       "Reinforce",
