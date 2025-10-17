@@ -433,6 +433,16 @@ def list_profiles():
         print(f"[ERROR] list_profiles failed: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
+@app.route('/all_profiles')
+def all_profiles():
+    try:
+        with profile_lock:
+            profiles = load_profiles()
+            return jsonify(profiles)
+    except Exception as e:
+        print(f"[ERROR] all_profiles failed: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
 
 @app.route("/get_profile")
 def get_profile():

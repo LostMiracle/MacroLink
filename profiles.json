@@ -16,10 +16,11 @@
       "Reinforce",
       "Resupply",
       "NUX-223_Hellbomb",
-      "MD-8_Gas_Mines",
-      "AX-TX-13_Guard_Dog_Dog_Breath",
-      "FLAM-40_Flamethrower",
-      "Orbital_Gas_Strike"
+      "Orbital_Gatling_Barrage",
+      "GR-8_Recoilless_Rifle",
+      "Orbital_Laser",
+      "A-ARC-3_Tesla_Tower",
+      "A-MLS-4X_Rocket_Sentry"
     ],
     "bots": [
       "Reinforce",
@@ -50,15 +51,22 @@
       "MD-8_Gas_Mines",
       "Orbital_Gas_Strike",
       "AX-TX-13_Guard_Dog_Dog_Breath",
-      "TX-14_Sterilizer"
+      "TX-14_Sterilizer",
+      "EXO-49_Emancipator_Exosuit",
+      "A-G-16_Gatling_Sentry",
+      "FLAM-40_Flamethrower"
     ],
     "bug caves": [
       "Reinforce",
       "Resupply",
-      "Eagle_500KG_Bomb",
+      "EXO-49_Emancipator_Exosuit",
+      "NUX-223_Hellbomb",
+      "A-MLS-4X_Rocket_Sentry",
       "GR-8_Recoilless_Rifle",
+      "MD-8_Gas_Mines",
+      "Orbital_Napalm_Barrage",
       "Orbital_Laser",
-      "Orbital_Napalm_Barrage"
+      "A-G-16_Gatling_Sentry"
     ]
   },
   "user2": {
@@ -66,10 +74,11 @@
       "Reinforce",
       "Resupply",
       "Eagle_Rearm",
-      "Eagle_Napalm_Airstrike",
-      "Eagle_500KG_Bomb",
-      "StA-X3_W.A.S.P._Launcher",
-      "EXO-49_Emancipator_Exosuit"
+      "EXO-49_Emancipator_Exosuit",
+      "GL-21_Grenade_Launcher",
+      "B-1_Supply_Pack",
+      "MD-8_Gas_Mines",
+      "Orbital_Gatling_Barrage"
     ],
     "major defense": [
       "Reinforce",
@@ -84,12 +93,10 @@
       "Reinforce",
       "Resupply",
       "Eagle_Rearm",
-      "Eagle_Napalm_Airstrike",
-      "StA-X3_W.A.S.P._Launcher",
       "EXO-49_Emancipator_Exosuit",
-      "MD-8_Gas_Mines",
-      "Orbital_Gatling_Barrage",
-      "GR-8_Recoilless_Rifle"
+      "GR-8_Recoilless_Rifle",
+      "MD-14_Incendiary_Mines",
+      "MD-8_Gas_Mines"
     ],
     "jump trooper": [
       "Reinforce",
@@ -201,10 +208,18 @@
       "LAS-99_Quasar_Cannon",
       "LIFT-182_Warp_Pack",
       "Orbital_Gas_Strike",
-      "EXO-49_Emancipator_Exosuit",
-      "EXO-45_Patriot_Exosuit",
       "LIFT-850_Jump_Pack",
-      "GL-21_Grenade_Launcher"
+      "GL-21_Grenade_Launcher",
+      "Orbital_Laser",
+      "APW-1_Anti-Materiel_Rifle"
+    ],
+    "squid defense": [
+      "Reinforce",
+      "Resupply",
+      "Orbital_Gatling_Barrage",
+      "Eagle_Cluster_Bomb",
+      "AC-8_Autocannon",
+      "A-MLS-4X_Rocket_Sentry"
     ]
   }
 }
