@@ -97,7 +97,7 @@ const isSelected = (profile) => {
     <div v-if="showProfiles"
         class="absolute bottom-0 left-0 right-0 top-0 bg-neutral-800/98 z-10 border-t-2 border-yellow-300">
         <div class="absolute top-0 left-0 right-0 z-20"></div>
-        <div class="absolute inset-0 overflow-y-auto pt-2">
+        <div class="absolute inset-0 overflow-y-auto">
             <div class="grid grid-cols-3 grid-container">
                 <button v-for="profile in profiles" :key="profile.id" @click="selectProfile(profile)"
                     class="flex flex-col gap-2 p-3 transition cursor-pointer"
@@ -119,6 +119,7 @@ const isSelected = (profile) => {
 <style lang="less" scoped>
 .grid-container>button {
     transition: background-color 0.2s;
+    color: #fde047;
 }
 
 .grid-container>button:nth-child(4n + 1),

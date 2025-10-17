@@ -37,6 +37,8 @@ export const useMacrolinkStore = defineStore('macrolink', () => {
   watch(selectedProfile, (newValue) => {
     if (newValue) {
       localStorage.setItem('selectedProfile', newValue)
+    } else {
+      localStorage.removeItem('selectedProfile')
     }
   })
 

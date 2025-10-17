@@ -121,7 +121,7 @@ onMounted(() => {
 
 <template>
   <div class="dashboard flex flex-col h-full">
-    <div class="flex flex-row justify-between p-2 items-center menu-stripes">
+    <div class="flex flex-row justify-between p-4 items-center menu-stripes">
       <h2 class="text-2xl font-bold">MACROLINK DASHBOARD</h2>
       <div class="flex flex-row gap-4 items-center">
         <button class="button-style text-sm" @click="checkAllClients">Refresh</button>

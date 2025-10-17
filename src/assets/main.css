@@ -12,6 +12,32 @@
     font-display: swap;
 }
 
+@supports not (color: oklch(50% 0 0)) {
+    :root {
+        --color-neutral-900: #171717;
+        --color-neutral-800: #262626;
+        --color-neutral-700: #404040;
+        --color-neutral-600: #525252;
+        --color-neutral-400: #a3a3a3;
+        --color-gray-500: #6b7280;
+        --color-yellow-200: #fef08a;
+        --color-yellow-400: #facc15;
+        --color-yellow-300: #fde047;
+        --color-green-600: #16a34a;
+        --color-green-500: #22c55e;
+        --color-green-400: #4ade80;
+        --color-green-300: #86efac;
+        --color-red-600: #dc2626;
+        --color-red-500: #ef4444;
+        --color-red-400: #f87171;
+        --color-red-300: #fca5a5;
+        --color-blue-500: #3b82f6;
+        --color-blue-400: #60a5fa;
+        --color-cyan-300: #67e8f9;
+        --color-amber-300: #fcd34d;
+    }
+}
+
 html,
 body {
     margin: 0;

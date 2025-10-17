@@ -39,7 +39,7 @@ const { play: removeModeClick } = useSound('remove-mode.mp3')
 </script>
 
 <template>
-    <header class="menu-stripes flex flex-row justify-between items-center bg-neutral-800 p-2 text-sm z-99">
+    <header class="menu-stripes flex flex-row justify-between items-center bg-neutral-800 p-4 text-sm z-99">
         <button @click="emit('toggleStratagems'), menuClick()" title="Stratagems"
             class="px-4 h-10 rounded cursor-pointer transition duration-200 ease-in-out select-none touch-manipulation button-style-conditional"
             :class="showStratagems ? 'bg-yellow-400 text-black' : 'bg-neutral-800 hover:bg-neutral-600 text-yellow-300 border-neutral-700'">
@@ -64,6 +64,8 @@ const { play: removeModeClick } = useSound('remove-mode.mp3')
     /* base dark */
     overflow: hidden;
     /* clip the stripes */
+    max-height: max-content;
+    height: auto;
 
     &::before {
         content: "";
