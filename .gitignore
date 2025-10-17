@@ -67,3 +67,4 @@ var/
 wheels/
 convert_to_webp.jsx
 convert_to_webp.py
+macros_generated.py

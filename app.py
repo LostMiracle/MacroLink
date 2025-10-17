@@ -11,10 +11,11 @@ import urllib.parse
 app = Flask(__name__, static_folder='dist', static_url_path='')
 CORS(app)
 
-# Replace this with your actual Pico W IP
-# MACRO_SERVER = "http://192.168.50.35:8888"
-# Place this in app.py (top)
+
 PROFILE_PATH = os.path.join(os.path.dirname(__file__), 'profiles.json')
+
+# macroData.js = source of truth for macros
+# Update app.py from macroData.js whenever new macros are added
 
 STATIC_MACROS = {
     "Reinforce": "Reinforce",
