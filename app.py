@@ -8,7 +8,7 @@ profile_lock = Lock()
 import requests # type: ignore
 import urllib.parse
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='dist', static_url_path='')
 CORS(app)
 
 # Replace this with your actual Pico W IP
@@ -338,16 +338,14 @@ def manifest():
 
 @app.route('/')
 def index():
-    image_dir = Path(app.static_folder) / "images"
-    existing_images = [f.name for f in image_dir.glob("*.png")]
-    return render_template(
-        'index.html',
-        static_macros=STATIC_MACROS,
-        dynamic_macros=DYNAMIC_MACROS,
-        macro_images=MACRO_IMAGES,
-        macro_styles=MACRO_STYLES,
-        image_files=existing_images
-    )
+    return send_from_directory('dist', 'index.html')
+
+# Catch-all for Vue Router (must be LAST route)
+@app.route('/<path:path>')
+def catch_all(path):
+    if os.path.exists(os.path.join('dist', path)):
+        return send_from_directory('dist', path)
+    return send_from_directory('dist', 'index.html')
 
 @app.route("/dashboard")
 def dashboard():
@@ -420,6 +418,16 @@ def save_profile():
     return jsonify({'status': 'saved', 'user': user, 'profile': profile})
 
 
+@app.route('/all_profiles')
+def all_profiles():
+    try:
+        with profile_lock:
+            profiles = load_profiles()
+            return jsonify(profiles)
+    except Exception as e:
+        print(f"[ERROR] all_profiles failed: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
 @app.route('/list_profiles')
 def list_profiles():
     user = request.args.get('user')
@@ -431,16 +439,6 @@ def list_profiles():
             return jsonify({'profiles': list(profiles.get(user, {}).keys())})
     except Exception as e:
         print(f"[ERROR] list_profiles failed: {e}")
-        return jsonify({'error': 'Internal server error'}), 500
-
-@app.route('/all_profiles')
-def all_profiles():
-    try:
-        with profile_lock:
-            profiles = load_profiles()
-            return jsonify(profiles)
-    except Exception as e:
-        print(f"[ERROR] all_profiles failed: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
 

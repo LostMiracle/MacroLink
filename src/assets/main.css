@@ -1,0 +1,88 @@
+@import 'tailwindcss';
+
+@theme {
+    --text-tiny: 0.625rem;
+}
+
+@font-face {
+    font-family: 'Protomolecule';
+    src: url('./fonts/Protomolecule.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    font-family: 'Protomolecule', sans-serif;
+    text-transform: lowercase;
+}
+
+#app {
+    height: 100%;
+    width: 100%;
+
+}
+
+* {
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+input,
+textarea,
+select {
+    -webkit-user-select: text;
+}
+
+.button-style {
+    @apply bg-neutral-800 border-1 border-neutral-700 shadow-sm shadow-black/50 text-yellow-300 cursor-pointer hover:bg-neutral-600 transition duration-200 ease-in-out select-none touch-manipulation px-4 h-10 rounded
+}
+
+.button-style-confirm {
+    @apply bg-green-400 border-1 border-neutral-700 shadow-sm shadow-black/50 text-white cursor-pointer hover:bg-green-600 transition duration-200 ease-in-out select-none touch-manipulation px-4 h-10 rounded
+}
+
+.button-style-cancel {
+    @apply bg-red-400 border-1 border-neutral-700 shadow-sm shadow-black/50 text-white cursor-pointer hover:bg-red-600 transition duration-200 ease-in-out select-none touch-manipulation px-4 h-10 rounded
+}
+
+.button-style-icon {
+    @apply bg-neutral-800 border-1 border-neutral-700 shadow-sm shadow-black/50 text-yellow-300 cursor-pointer hover:bg-neutral-600 transition duration-200 ease-in-out select-none touch-manipulation h-10 rounded
+}
+
+.button-style-conditional {
+    @apply border-1 shadow-sm shadow-black/50
+}
+
+.compact-toast {
+    padding: 0.5rem 1rem !important;
+    min-height: auto !important;
+
+    .Vue-Toastification__toast-body {
+        font-size: 0.875rem !important;
+    }
+}
+
+.full-toast {
+    padding: 1rem 1.5rem !important;
+    min-height: auto !important;
+}
+
+.Vue-Toastification__toast {
+    font-family: 'Protomolecule', sans-serif;
+}
+
+.Vue-Toastification__toast-body {
+    font-family: 'Protomolecule', sans-serif;
+}
