@@ -2,6 +2,24 @@
 
 A web-based interface for managing and deploying Helldivers 2 stratagem macros to Raspberry Pi Pico devices.
 
+## Screenshots
+
+<div align="center">
+
+### Main Interface
+![Main Interface](screenshots/main-screenshot.png)
+
+### Stratagem Selection
+![Stratagem Selection](screenshots/stratagems-screenshot.png)
+
+### Loadout Management
+![Loadout Management](screenshots/loadouts-screenshot.png)
+
+### Device Dashboard
+![Device Dashboard](screenshots/dashboardmain-screenshot.png)
+
+</div>
+
 ## Features
 
 - **Visual Macro Management**: Drag-and-drop interface for organizing up to 10 macros per loadout
