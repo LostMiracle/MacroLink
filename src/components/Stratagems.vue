@@ -72,7 +72,7 @@ const stratagems = computed(() => {
             id: index + 1,
             key: key,
             name: DYNAMIC_MACROS[key],
-            image: MACRO_IMAGES[key] || 'nyi.png',
+            image: MACRO_IMAGES[key] || 'nyi.webp',
             onDevice: onDevice
         }
     })
@@ -89,13 +89,13 @@ const currentIconsSet = computed(() => {
 })
 
 const isInGrid = (stratagem) => {
-    const iconName = stratagem.image.replace('.png', '')
+    const iconName = stratagem.image.replace('.webp', '')
     return currentIconsSet.value.has(iconName)
 }
 
-// Handle image load error - fallback to nyi.png
+// Handle image load error - fallback to nyi.webp
 const handleImageError = (event) => {
-    event.target.src = '/images/nyi.png'
+    event.target.src = '/images/nyi.webp'
 }
 </script>
 

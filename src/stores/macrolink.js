@@ -44,7 +44,7 @@ export const useMacrolinkStore = defineStore('macrolink', () => {
 
   // Actions
   function addMacro(stratagem) {
-    const iconName = stratagem.image.replace('.png', '')
+    const iconName = stratagem.image.replace('.webp', '')
     const existingIndex = macros.value.findIndex((macro) => macro.icon === iconName)
 
     if (existingIndex !== -1) {
@@ -99,7 +99,7 @@ export const useMacrolinkStore = defineStore('macrolink', () => {
         // Convert to icon format, starting from id 3
         const dynamicMacros = filteredMacros.map((macroKey, index) => {
           const imageFile = MACRO_IMAGES[macroKey]
-          const iconName = imageFile ? imageFile.replace('.png', '') : macroKey.toLowerCase()
+          const iconName = imageFile ? imageFile.replace('.webp', '') : macroKey.toLowerCase()
 
           return {
             id: index + 3,

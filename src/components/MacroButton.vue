@@ -48,7 +48,7 @@ const handleClick = () => {
     <button
         class="flex flex-col items-center rounded-lg overflow-hidden justify-center aspect-square select-none touch-manipulation cursor-pointer h-full border-2 active:scale-95 transition-transform"
         :class="[getBorderColor(), getGlowClass()]" @click="handleClick()">
-        <img :src="`/images/${props.macro.icon}.png`" alt="Macro Button" class="aspect-square" />
+        <img :src="`/images/${props.macro.icon}.webp`" alt="Macro Button" class="aspect-square" />
     </button>
 </template>
 
