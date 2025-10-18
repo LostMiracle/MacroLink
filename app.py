@@ -10,6 +10,7 @@ import urllib.parse
 
 app = Flask(__name__, static_folder='dist', static_url_path='')
 CORS(app)
+app.url_map.strict_slashes = False
 
 
 PROFILE_PATH = os.path.join(os.path.dirname(__file__), 'profiles.json')
@@ -341,26 +342,28 @@ def manifest():
 def index():
     return send_from_directory('dist', 'index.html')
 
-# Catch-all for Vue Router (must be LAST route)
-@app.route('/<path:path>')
-def catch_all(path):
-    if os.path.exists(os.path.join('dist', path)):
-        return send_from_directory('dist', path)
+@app.route('/dashboard')
+def dashboard_view():
     return send_from_directory('dist', 'index.html')
 
-@app.route("/dashboard")
-def dashboard():
-    image_dir = Path(app.static_folder) / "images"
-    existing_images = [f.name for f in image_dir.glob("*.png")]
-    return render_template(
-        "dashboard.html",
-        static_macros=STATIC_MACROS,
-        dynamic_macros=DYNAMIC_MACROS,
-        normalized_macros=NORMALIZED_MACROS,
-        macro_images=MACRO_IMAGES,
-        macro_styles=MACRO_STYLES,
-        image_files=existing_images
-    )
+@app.route('/settings')
+def settings_view():
+    return send_from_directory('dist', 'index.html')
+
+# Old server-side dashboard route (deprecated)
+# @app.route("/dashboard")
+# def dashboard():
+#     image_dir = Path(app.static_folder) / "images"
+#     existing_images = [f.name for f in image_dir.glob("*.png")]
+#     return render_template(
+#         "dashboard.html",
+#         static_macros=STATIC_MACROS,
+#         dynamic_macros=DYNAMIC_MACROS,
+#         normalized_macros=NORMALIZED_MACROS,
+#         macro_images=MACRO_IMAGES,
+#         macro_styles=MACRO_STYLES,
+#         image_files=existing_images
+#     )
 
 PICO_IPS = {
     "green": "http://192.168.50.34:8888",
@@ -511,6 +514,18 @@ def rename_profile():
 # @app.route('/macros.json')
 # def serve_macros():
 #     return send_from_directory("static/json", "macros.json")
+
+# Catch-all for Vue Router (must be LAST route)
+@app.route('/<path:path>')
+def catch_all(path):
+    print(f"[CATCH-ALL] Requested path: {path}")
+    file_path = os.path.join('dist', path)
+    print(f"[CATCH-ALL] Checking if exists: {file_path}")
+    if os.path.exists(file_path):
+        print(f"[CATCH-ALL] File exists, serving: {path}")
+        return send_from_directory('dist', path)
+    print(f"[CATCH-ALL] File not found, serving index.html")
+    return send_from_directory('dist', 'index.html')
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8888)
