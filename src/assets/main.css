@@ -59,8 +59,11 @@ body {
 
 * {
     -webkit-transform: translateZ(0);
+    transform: translateZ(0);
     -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     -webkit-user-select: none;
+    user-select: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
 }
@@ -69,6 +72,7 @@ input,
 textarea,
 select {
     -webkit-user-select: text;
+    user-select: text;
 }
 
 .button-style {

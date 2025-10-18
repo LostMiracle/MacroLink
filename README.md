@@ -1,6 +1,6 @@
 # MacroLink GUI
 
-A web-based interface for managing and deploying Helldivers 2 stratagem macros to Raspberry Pi Pico devices.
+A web-based interface for managing and deploying Helldivers 2 stratagem macros to companion Raspberry Pi Pico HID devices.
 
 ## Screenshots
 
@@ -22,8 +22,8 @@ A web-based interface for managing and deploying Helldivers 2 stratagem macros t
 
 ## Features
 
-- **Visual Macro Management**: Drag-and-drop interface for organizing up to 10 macros per loadout
-- **Multiple User Profiles**: Support for green and blue MacroLink devices with independent loadouts
+- **Visual Macro Management**: Interface for organizing up to 10 macros per loadout
+- **Multiple User Profiles**: Support for multiple devices with independent loadouts
 - **Device Dashboard**: Monitor device status, uptime, and macro availability in real-time
 - **Profile System**: Save, load, rename, and delete custom loadout configurations
 - **Live Device Sync**: Automatic comparison with device macros to show availability
@@ -48,7 +48,7 @@ A web-based interface for managing and deploying Helldivers 2 stratagem macros t
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/MacroLink_GUI.git
+git clone https://github.com/LostMiracle/MacroLink_GUI.git
 cd MacroLink_GUI
 
 # Install frontend dependencies
@@ -99,7 +99,6 @@ The firmware handles:
 - Network communication with the GUI
 - Macro execution and input simulation
 - Device status reporting
-- Real-time synchronization
 
 ## Usage
 
