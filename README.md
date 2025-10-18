@@ -33,6 +33,7 @@ A web-based interface for managing and deploying Helldivers 2 stratagem macros t
 - **Vue 3** - Frontend framework
 - **Vite** - Build tool and dev server
 - **Tailwind CSS v4** - Styling
+- **LESS** - CSS preprocessor for component styles
 - **Pinia** - State management
 - **Flask** - Backend API
 
