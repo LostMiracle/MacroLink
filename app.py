@@ -1,5 +1,5 @@
 import json, os
-from flask import Flask, render_template, jsonify, send_from_directory, request  # type: ignore
+from flask import Flask, jsonify, send_from_directory, request  # type: ignore
 from flask_cors import CORS # type: ignore
 from pathlib import Path
 from threading import Lock
