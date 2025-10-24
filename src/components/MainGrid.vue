@@ -119,10 +119,13 @@ const particlesOptions = {
 const triggerMacro = async (macro) => {
   const userKey = selectedUser.value === 'green' ? 'user1' : 'user2'
 
+  let macroKey = macro.macroKey
+  let displayName = macroKey.replaceAll('_', ' ')
+
   try {
-    const response = await fetch(`/trigger/${macro.macroKey}?user=${userKey}`)
+    const response = await fetch(`/trigger/${macroKey}?user=${userKey}`)
     // Handle response
-    toast.success(`Triggered ${macro.macroKey}`)
+    toast.success(`Triggered [${displayName}]`)
   } catch (error) {
     toast.error('Failed to trigger macro')
   }

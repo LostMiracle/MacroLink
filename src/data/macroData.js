@@ -1,4 +1,5 @@
 // Dynamic Macros from app.py
+// Whenever new macros are added, update app.py
 export const DYNAMIC_MACROS = {
   Orbital_Precision_Strike: 'Orbital Precision Strike',
   Orbital_Gatling_Barrage: 'Orbital Gatling Barrage',

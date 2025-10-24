@@ -31,6 +31,7 @@ A web-based interface for managing and deploying Helldivers 2 stratagem macros t
 ## Tech Stack
 
 - **Vue 3** - Frontend framework
+- **Vue Router** - Client-side routing
 - **Vite** - Build tool and dev server
 - **Tailwind CSS v4** - Styling
 - **LESS** - CSS preprocessor for component styles
