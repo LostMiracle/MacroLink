@@ -86,7 +86,6 @@ export const DYNAMIC_MACROS = {
   Prospecting_Drill: 'Prospecting Drill',
   Super_Earth_Flag: 'Super Earth Flag',
   SEAF_Artillery: 'SEAF Artillery',
-  TEST: 'TEST',
 }
 
 export const MACRO_IMAGES = {
@@ -175,7 +174,6 @@ export const MACRO_IMAGES = {
   'S-11_Speargun': 'Speargun.webp',
   'EAT-700_Expendable_Napalm': 'Expendable_Napalm.webp',
   'MS-11_Solo_Silo': 'Solo_Silo.webp',
-  TEST: 'TEST.webp',
 }
 
 export const MACRO_STYLES = {
@@ -268,7 +266,6 @@ export const MACRO_STYLES = {
   'S-11_Speargun': { border: 'blue' },
   'EAT-700_Expendable_Napalm': { border: 'blue' },
   'MS-11_Solo_Silo': { border: 'blue' },
-  TEST: { border: 'red' },
 }
 
 // Create reverse mapping: icon filename (without .webp) → macro key
