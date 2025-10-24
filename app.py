@@ -4,7 +4,8 @@ from flask_cors import CORS # type: ignore
 from pathlib import Path
 from threading import Lock
 profile_lock = Lock()
-# Lock for thread-safe profile access
+device_lock = Lock()
+# Locks for thread-safe access
 import requests # type: ignore
 import urllib.parse
 
@@ -14,6 +15,7 @@ app.url_map.strict_slashes = False
 
 
 PROFILE_PATH = os.path.join(os.path.dirname(__file__), 'profiles.json')
+DEVICES_PATH = os.path.join(os.path.dirname(__file__), 'devices.json')
 
 # macroData.js = source of truth for macros
 # Update app.py from macroData.js whenever new macros are added
@@ -514,6 +516,104 @@ def rename_profile():
 # @app.route('/macros.json')
 # def serve_macros():
 #     return send_from_directory("static/json", "macros.json")
+
+# Device Management Endpoints
+@app.route('/devices', methods=['GET'])
+def get_devices():
+    """Get all saved devices"""
+    try:
+        with device_lock:
+            if os.path.exists(DEVICES_PATH):
+                with open(DEVICES_PATH, 'r') as f:
+                    devices = json.load(f)
+                return jsonify(devices)
+            else:
+                return jsonify([])
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/devices', methods=['POST'])
+def add_device():
+    """Add a new device"""
+    try:
+        device_data = request.get_json()
+        
+        with device_lock:
+            # Load existing devices
+            devices = []
+            if os.path.exists(DEVICES_PATH):
+                with open(DEVICES_PATH, 'r') as f:
+                    devices = json.load(f)
+            
+            # Check if device already exists
+            for device in devices:
+                if device.get('id') == device_data.get('id') or device.get('ip') == device_data.get('ip'):
+                    return jsonify({'error': 'Device already exists'}), 400
+            
+            # Add new device
+            devices.append(device_data)
+            
+            # Save back to file
+            with open(DEVICES_PATH, 'w') as f:
+                json.dump(devices, f, indent=2)
+            
+            return jsonify({'success': True, 'device': device_data})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/devices/<device_id>', methods=['PUT'])
+def update_device(device_id):
+    """Update device name or other properties"""
+    try:
+        update_data = request.get_json()
+        
+        with device_lock:
+            # Load existing devices
+            devices = []
+            if os.path.exists(DEVICES_PATH):
+                with open(DEVICES_PATH, 'r') as f:
+                    devices = json.load(f)
+            
+            # Find and update device
+            for device in devices:
+                if device.get('id') == device_id:
+                    device.update(update_data)
+                    
+                    # Save back to file
+                    with open(DEVICES_PATH, 'w') as f:
+                        json.dump(devices, f, indent=2)
+                    
+                    return jsonify({'success': True, 'device': device})
+            
+            return jsonify({'error': 'Device not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/devices/<device_id>', methods=['DELETE'])
+def delete_device(device_id):
+    """Delete a device"""
+    try:
+        with device_lock:
+            # Load existing devices
+            devices = []
+            if os.path.exists(DEVICES_PATH):
+                with open(DEVICES_PATH, 'r') as f:
+                    devices = json.load(f)
+            
+            # Remove device
+            original_length = len(devices)
+            devices = [d for d in devices if d.get('id') != device_id]
+            
+            if len(devices) == original_length:
+                return jsonify({'error': 'Device not found'}), 404
+            
+            # Save back to file
+            with open(DEVICES_PATH, 'w') as f:
+                json.dump(devices, f, indent=2)
+            
+            return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Catch-all for Vue Router (must be LAST route)
 @app.route('/<path:path>')
