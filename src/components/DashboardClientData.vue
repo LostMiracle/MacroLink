@@ -47,7 +47,7 @@ const clientData = computed(() => {
             ? `${formatUptime(data.uptime - data.last_server_recovery)} ago`
             : 'none',
         memory_used: formatBytes(data.memory?.used),
-        memory_free: formatBytes(data.memory?.free),
+        memory_free: formatBytes(data.memory),
         memory_used_percentage: data.memory?.percent_used
             ? `${data.memory.percent_used.toFixed(1)}%`
             : 'N/A',
