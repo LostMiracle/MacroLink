@@ -8,14 +8,10 @@ const props = defineProps({
     },
 })
 
-const emit = defineEmits(['reboot', 'clientInfo', 'rename'])
+const emit = defineEmits(['reboot', 'clientInfo'])
 
 const clientInfo = () => {
     emit('clientInfo')
-}
-
-const renameClient = () => {
-    emit('rename')
 }
 
 const showClientData = ref(false)
@@ -32,12 +28,6 @@ const showClientData = ref(false)
                 @click="clientInfo" :disabled="client.status === 'offline'"
                 :class="client.status === 'online' ? 'opacity-100 text-yellow-300 border-neutral-700 hover:bg-neutral-600 cursor-pointer' : 'opacity-50 border-red-400 text-red-400 cursor-not-allowed'">
                 INFO
-            </button>
-            <button
-                class="px-4 h-10 rounded transition duration-200 ease-in-out select-none touch-manipulation button-style-conditional bg-neutral-800"
-                @click="renameClient"
-                :class="'opacity-100 text-blue-300 border-neutral-700 hover:bg-neutral-600 cursor-pointer'">
-                Rename
             </button>
             <button
                 class="px-4 h-10 rounded transition duration-200 ease-in-out select-none touch-manipulation button-style-conditional bg-neutral-800"

@@ -20,8 +20,7 @@
       "Orbital_Napalm_Barrage",
       "Orbital_380MM_HE_Barrage",
       "Eagle_Cluster_Bomb",
-      "Eagle_Rearm",
-      "MS-11_Solo_Silo"
+      "Eagle_Rearm"
     ],
     "bots": [
       "Reinforce",
@@ -44,7 +43,8 @@
       "A-ARC-3_Tesla_Tower",
       "NUX-223_Hellbomb",
       "EXO-49_Emancipator_Exosuit",
-      "MD-8_Gas_Mines"
+      "A-M-23_EMS_Mortar_Sentry",
+      "GR-8_Recoilless_Rifle"
     ],
     "gas": [
       "Reinforce",
@@ -214,7 +214,7 @@
       "Orbital_Laser",
       "APW-1_Anti-Materiel_Rifle"
     ],
-    "anti squeater": [
+    "squid defense": [
       "Reinforce",
       "Resupply",
       "Orbital_Gatling_Barrage",
