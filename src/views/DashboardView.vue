@@ -4,6 +4,8 @@ import DashboardClient from '../components/DashboardClient.vue'
 import DashboardClientData from '../components/DashboardClientData.vue'
 import Modal from '../components/Modal.vue'
 import ModalConfirm from '../components/ModalConfirm.vue'
+import ModalInput from '../components/ModalInput.vue'
+import ModalAddDevice from '../components/ModalAddDevice.vue'
 import { useToast, POSITION } from 'vue-toastification'
 
 const toast = useToast()
@@ -17,6 +19,9 @@ const showClientData = ref(false)
 const selectedClient = ref(null)
 const showRebootConfirm = ref(false)
 const clientToReboot = ref(null)
+const showAddDevice = ref(false)
+const showRenameDevice = ref(false)
+const deviceToRename = ref(null)
 
 const checkAllClients = async () => {
   try {
@@ -113,8 +118,113 @@ const handleClientInfo = (client) => {
   showClientData.value = true
 }
 
+// Add device handler
+const handleAddDevice = async (deviceData) => {
+  try {
+    // Check if device already exists locally
+    const existingDevice = clients.value.find(client => 
+      client.id === deviceData.device_id || 
+      client.label === deviceData.name ||
+      (client.data && client.data.ip === deviceData.ip)
+    )
+    
+    if (existingDevice) {
+      toast.error(`Device ${deviceData.name} already exists`)
+      return
+    }
+    
+    // Add the new device to the clients array (device is already saved to backend by ModalAddDevice)
+    const newClient = {
+      id: deviceData.device_id,
+      label: deviceData.name,
+      status: 'offline',
+      data: null
+    }
+    clients.value.push(newClient)
+    
+    showAddDevice.value = false
+    
+    // Check status of the new device
+    setTimeout(checkAllClients, 1000)
+  } catch (error) {
+    console.error('Failed to add device:', error)
+    toast.error('Failed to add device')
+  }
+}
+
+// Rename device handler
+const handleRenameDevice = (client) => {
+  deviceToRename.value = client
+  showRenameDevice.value = true
+}
+
+// Confirm rename
+const confirmRename = async (newName) => {
+  if (!deviceToRename.value || !newName.trim()) return
+  
+  try {
+    // Check if this is a static device (green/blue) or a saved device
+    if (deviceToRename.value.id === 'green' || deviceToRename.value.id === 'blue') {
+      // Static devices - just update locally (no backend save needed)
+      deviceToRename.value.label = newName.trim()
+      toast.success(`Device renamed to ${newName}`)
+      showRenameDevice.value = false
+      deviceToRename.value = null
+    } else {
+      // Saved device - update in backend
+      const response = await fetch(`/devices/${deviceToRename.value.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: newName.trim() })
+      })
+      
+      if (response.ok) {
+        // Update the client label locally
+        deviceToRename.value.label = newName.trim()
+        toast.success(`Device renamed to ${newName}`)
+        showRenameDevice.value = false
+        deviceToRename.value = null
+      } else {
+        const error = await response.json()
+        toast.error(error.error || 'Failed to rename device')
+      }
+    }
+  } catch (error) {
+    console.error('Failed to rename device:', error)
+    toast.error('Failed to rename device')
+  }
+}
+
+// Load saved devices from backend
+const loadSavedDevices = async () => {
+  try {
+    const response = await fetch('/devices')
+    if (response.ok) {
+      const savedDevices = await response.json()
+      
+      // Add saved devices to clients array (after static ones)
+      savedDevices.forEach(device => {
+        const newClient = {
+          id: device.id,
+          label: device.name,
+          status: 'offline',
+          data: null
+        }
+        clients.value.push(newClient)
+      })
+      
+      console.log(`Loaded ${savedDevices.length} saved devices`)
+    }
+  } catch (error) {
+    console.error('Failed to load saved devices:', error)
+  }
+}
+
 // Check on mount
 onMounted(() => {
+  loadSavedDevices()
   checkAllClients()
 })
 </script>
@@ -125,13 +235,14 @@ onMounted(() => {
       <h2 class="text-2xl font-bold">MACROLINK DASHBOARD</h2>
       <div class="flex flex-row gap-4 items-center">
         <button class="button-style text-sm" @click="checkAllClients">Refresh</button>
+        <button class="button-style text-sm" @click="showAddDevice = true">Add Device</button>
         <router-link to="/"><button class="button-style text-sm">Macro
             Panel</button></router-link>
       </div>
     </div>
     <div class="p-4 flex flex-col gap-4">
       <DashboardClient v-for="client in clients" :key="client.label" :client="client" @reboot="handleReboot(client)"
-        @clientInfo="handleClientInfo(client)" />
+        @clientInfo="handleClientInfo(client)" @rename="handleRenameDevice(client)" />
     </div>
   </div>
 
@@ -147,6 +258,24 @@ onMounted(() => {
     <Modal v-if="showRebootConfirm" @close="showRebootConfirm = false">
       <ModalConfirm :action="`reboot ${clientToReboot?.label}`" @close="showRebootConfirm = false"
         @confirm="confirmReboot" />
+    </Modal>
+  </Transition>
+
+  <!-- Modal for adding devices -->
+  <Transition name="fade">
+    <Modal v-if="showAddDevice" @close="showAddDevice = false">
+      <ModalAddDevice @close="showAddDevice = false" @confirm="handleAddDevice" />
+    </Modal>
+  </Transition>
+
+  <!-- Modal for renaming devices -->
+  <Transition name="fade">
+    <Modal v-if="showRenameDevice" @close="showRenameDevice = false">
+      <ModalInput 
+        title="Rename Device" 
+        :placeholder="deviceToRename?.label || 'Enter new name'"
+        @close="showRenameDevice = false" 
+        @confirm="confirmRename" />
     </Modal>
   </Transition>
   <!-- detail text-->
