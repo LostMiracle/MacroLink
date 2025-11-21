@@ -111,8 +111,23 @@ select {
 
 .Vue-Toastification__toast {
     font-family: 'Protomolecule', sans-serif;
+    pointer-events: auto;
 }
 
 .Vue-Toastification__toast-body {
     font-family: 'Protomolecule', sans-serif;
+}
+
+/* Ensure toast container is positioned relative to viewport */
+.Vue-Toastification__container {
+    position: fixed !important;
+    z-index: 9999 !important;
+    pointer-events: none;
+}
+
+.Vue-Toastification__container--top-center {
+    top: 1rem !important;
+    bottom: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
 }

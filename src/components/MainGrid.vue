@@ -125,9 +125,14 @@ const triggerMacro = async (macro) => {
   try {
     const response = await fetch(`/trigger/${macroKey}?user=${userKey}`)
     // Handle response
-    toast.success(`Triggered [${displayName}]`)
+    toast.success(`Triggered [${displayName}]`, {
+      toastClassName: ' compact-toast',
+      timeout: 2000,
+    })
   } catch (error) {
-    toast.error('Failed to trigger macro')
+    toast.error('Failed to trigger macro', {
+      toastClassName: ' compact-toast'
+    })
   }
 }
 
