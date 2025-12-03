@@ -159,7 +159,7 @@ const handleMacroClick = (macro) => {
 
   <Transition name="slide-down">
     <Stratagems v-if="showStratagems" :show-stratagems="showStratagems" :current-macros="macros"
-      @select-stratagem="addMacro" />
+      :selected-user="selectedUser" @select-stratagem="addMacro" />
   </Transition>
   <Transition name="slide-down">
     <Profiles v-if="showProfiles" :show-profiles="showProfiles" :selected-user="selectedUser"

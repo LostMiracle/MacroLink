@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { DYNAMIC_MACROS, MACRO_IMAGES } from '@/data/macroData'
 
 const props = defineProps({
@@ -11,6 +11,11 @@ const props = defineProps({
     currentMacros: {
         type: Array,
         required: true,
+    },
+    selectedUser: {
+        type: String,
+        required: false,
+        default: ''
     }
 })
 
@@ -20,6 +25,10 @@ const emit = defineEmits(['select-stratagem'])
 const deviceMacros = ref({})
 const deviceMacroNames = ref(new Set())
 const deviceDataLoaded = ref(false)
+
+const getPreferredDeviceKey = () => {
+    return props.selectedUser === 'blue' ? 'blue' : 'green'
+}
 
 // Fetch device macros from Pico
 const fetchDeviceMacros = async () => {
@@ -31,15 +40,19 @@ const fetchDeviceMacros = async () => {
 
         if (response.ok) {
             const allData = await response.json()
-            // Try to get macros from green or blue device
-            const greenData = allData['green']
-            const blueData = allData['blue']
-            
-            // Use whichever device is online
-            if (greenData && !greenData.error && greenData.macros) {
-                deviceMacros.value = greenData.macros
-            } else if (blueData && !blueData.error && blueData.macros) {
-                deviceMacros.value = blueData.macros
+            const preferredKey = getPreferredDeviceKey()
+            const fallbackKey = preferredKey === 'green' ? 'blue' : 'green'
+
+            const preferredData = allData[preferredKey]
+            const fallbackData = allData[fallbackKey]
+
+            // Prefer the currently selected user's device, fall back to the other if needed
+            if (preferredData && !preferredData.error && preferredData.macros) {
+                deviceMacros.value = preferredData.macros
+            } else if (fallbackData && !fallbackData.error && fallbackData.macros) {
+                deviceMacros.value = fallbackData.macros
+            } else {
+                deviceMacros.value = {}
             }
 
             // Create normalized set of macro names
@@ -60,6 +73,14 @@ const fetchDeviceMacros = async () => {
 onMounted(() => {
     fetchDeviceMacros()
 })
+
+// Re-fetch macros when the selected user changes
+watch(
+    () => props.selectedUser,
+    () => {
+        fetchDeviceMacros()
+    }
+)
 
 // Convert to array for v-for with device availability check
 const stratagems = computed(() => {

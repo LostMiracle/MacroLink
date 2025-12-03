@@ -21,6 +21,7 @@ export const DYNAMIC_MACROS = {
   Eagle_Napalm_Airstrike: 'Eagle Napalm Airstrike',
   Eagle_Smoke_Strike: 'Eagle Smoke Strike',
   'CQC-1_One_True_Flag': 'CQC-1 One True Flag',
+  'CQC-9_Defoliation_Tool': 'CQC-9 Defoliation Tool',
   'MG-43_Machine_Gun': 'MG-43 Machine Gun',
   'M-105_Stalwart': 'M-105 Stalwart',
   'MG-206_Heavy_Machine_Gun': 'MG-206 Heavy Machine Gun',
@@ -42,6 +43,7 @@ export const DYNAMIC_MACROS = {
   'RL-77_Airburst_Rocket_Launcher': 'RL-77 Airburst Rocket Launcher',
   'FAF-14_Spear_Launcher': 'FAF-14 Spear Launcher',
   'StA-X3_W.A.S.P._Launcher': 'StA-X3 W.A.S.P. Launcher',
+  'M-1000_Maxigun': 'M-1000 Maxigun',
   'GR-8_Recoilless_Rifle': 'GR-8 Recoilless Rifle',
   'MS-11_Solo_Silo': 'MS-11 Solo Silo',
   'LIFT-860_Hover_Pack': 'LIFT-860 Hover Pack',
@@ -54,6 +56,7 @@ export const DYNAMIC_MACROS = {
   'B-100_Portable_Hellbomb': 'B-100 Portable Hellbomb',
   'AX-AR-23_Guard_Dog': "AX/AR-23 'Guard Dog'",
   'AX-LAS-5_Guard_Dog_Rover': "AX/LAS-5 'Guard Dog' Rover",
+  'AX-FLAM-75_Guard_Dog_Hot_dog': "AX/FLAM-75 'Guard Dog' Hot Dog",
   'AX-TX-13_Guard_Dog_Dog_Breath': "AX/TX-13 'Guard Dog' Dog Breath",
   'AX_ARC-3_Guard_Dog_K9': "AX/ARC-3 'Guard Dog' K9",
   'M-102_Fast_Recon_Vehicle': 'M-102 Fast Recon Vehicle',
@@ -174,6 +177,9 @@ export const MACRO_IMAGES = {
   'S-11_Speargun': 'Speargun.webp',
   'EAT-700_Expendable_Napalm': 'Expendable_Napalm.webp',
   'MS-11_Solo_Silo': 'Solo_Silo.webp',
+  'M-1000_Maxigun': 'M-1000_Maxigun.webp',
+  'AX-FLAM-75_Guard_Dog_Hot_dog': 'AX_FLAM-75_Guard_Dog_Hot_dog.webp',
+  'CQC-9_Defoliation_Tool': 'CQC-9_Defoliation_Tool.webp',
 }
 
 export const MACRO_STYLES = {
@@ -266,6 +272,10 @@ export const MACRO_STYLES = {
   'S-11_Speargun': { border: 'blue' },
   'EAT-700_Expendable_Napalm': { border: 'blue' },
   'MS-11_Solo_Silo': { border: 'blue' },
+  //Python Commandos
+  'M-1000_Maxigun': { border: 'blue' },
+  'AX-FLAM-75_Guard_Dog_Hot_dog': { border: 'blue' },
+  'CQC-9_Defoliation_Tool': { border: 'blue' },
 }
 
 // Create reverse mapping: icon filename (without .webp) → macro key
