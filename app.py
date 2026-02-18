@@ -47,12 +47,15 @@ DYNAMIC_MACROS = {
     "Eagle_Smoke_Strike": "Eagle Smoke Strike",
     # Support Weapons
     "CQC-1_One_True_Flag": "CQC-1 One True Flag",
+    "CQC-9_Defoliation_Tool": "CQC-9 Defoliation Tool",
+    "CQC-20_Breaching_Hammer": "CQC-20 Breaching Hammer",
     "MG-43_Machine_Gun": "MG-43 Machine Gun",
     "M-105_Stalwart": "M-105 Stalwart",
     "MG-206_Heavy_Machine_Gun": "MG-206 Heavy Machine Gun",
     "RS-422_Railgun": "RS-422 Railgun",
     "APW-1_Anti-Materiel_Rifle": "APW-1 Anti-Materiel Rifle",
     "GL-21_Grenade_Launcher": "GL-21 Grenade Launcher",
+    "GL-28_Belt-Fed_Grenade_Launcher": "GL-28 Belt-Fed Grenade Launcher",
     "GL-52_De-Escalator": "GL-52 De-Escalator",
     "TX-14_Sterilizer": "TX-14 Sterilizer",
     "FLAM-40_Flamethrower": "FLAM-40 Flamethrower",
@@ -64,6 +67,7 @@ DYNAMIC_MACROS = {
     "S-11_Speargun": "S-11 Speargun",
     "EAT-17_Expendable_Anti-Tank": "EAT-17 Expendable Anti-Tank",
     "EAT-700_Expendable_Napalm": "EAT-700 Expendable Napalm",
+    "EAT-411_Leveller": "EAT-411 Leveller",
     "AC-8_Autocannon": "AC-8 Autocannon",
     "RL-77_Airburst_Rocket_Launcher": "RL-77 Airburst Rocket Launcher",
     "FAF-14_Spear_Launcher": "FAF-14 Spear Launcher",
@@ -79,11 +83,13 @@ DYNAMIC_MACROS = {
     "SH-20_Ballistic_Shield_Backpack": "SH-20 Ballistic Shield Backpack",
     "B-1_Supply_Pack": "B-1 Supply Pack",
     "B-100_Portable_Hellbomb": "B-100 Portable Hellbomb",
+    "B-MD_C4_Pack": "B/MD C4 Pack",
     "AX-AR-23_Guard_Dog": "AX/AR-23 'Guard Dog'",
     "AX-LAS-5_Guard_Dog_Rover": "AX/LAS-5 'Guard Dog' Rover",
     "AX-TX-13_Guard_Dog_Dog_Breath": "AX/TX-13 'Guard Dog' Dog Breath",
     "AX_ARC-3_Guard_Dog_K9": "AX/ARC-3 'Guard Dog' K9",
     "M-102_Fast_Recon_Vehicle": "M-102 Fast Recon Vehicle",
+    "TD-220_Bastion": "TD-220 Bastion",
     "EXO-49_Emancipator_Exosuit": "EXO-49 Emancipator Exosuit",
     "EXO-45_Patriot_Exosuit": "EXO-45 Patriot Exosuit",
     # Sentries and Emplacements
@@ -396,7 +402,11 @@ def trigger_macro(macro):
     print(f"Triggering macro '{macro}' for user '{selected_user}' → {target_server}")
 
     try:
-        response = requests.get(f"{target_server}/{macro}", timeout=1)
+        # Target server expects lowercase macro keys (e.g. cqc-20_breaching_hammer)
+        macro_lower = macro.lower()
+        # Macros can take 1–2s to execute (key hold + delay per input); short timeout caused
+        # client to close the connection while Pico was still running, leading to crashes
+        response = requests.get(f"{target_server}/{macro_lower}", timeout=5)
         response.raise_for_status()
         return jsonify({"status": "success", "macro": macro})
     except requests.exceptions.RequestException as e:

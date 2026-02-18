@@ -4,13 +4,13 @@
       "Reinforce",
       "Resupply",
       "EXO-49_Emancipator_Exosuit",
-      "GL-52_De-Escalator",
       "MD-8_Gas_Mines",
       "NUX-223_Hellbomb",
       "Orbital_Laser",
       "LIFT-182_Warp_Pack",
-      "MD-14_Incendiary_Mines",
-      "Orbital_Napalm_Barrage"
+      "Orbital_Napalm_Barrage",
+      "AX-FLAM-75_Guard_Dog_Hot_dog",
+      "GR-8_Recoilless_Rifle"
     ],
     "squid": [
       "Reinforce",
@@ -18,9 +18,11 @@
       "NUX-223_Hellbomb",
       "GR-8_Recoilless_Rifle",
       "Orbital_Napalm_Barrage",
-      "Orbital_380MM_HE_Barrage",
       "Eagle_Cluster_Bomb",
-      "Eagle_Rearm"
+      "Eagle_Rearm",
+      "A-MLS-4X_Rocket_Sentry",
+      "A-G-16_Gatling_Sentry",
+      "Orbital_Laser"
     ],
     "bots": [
       "Reinforce",
@@ -31,8 +33,8 @@
       "NUX-223_Hellbomb",
       "A-MLS-4X_Rocket_Sentry",
       "Orbital_Railcannon_Strike",
-      "FX-12_Shield_Generator_Relay",
-      "Orbital_Napalm_Barrage"
+      "Orbital_Napalm_Barrage",
+      "A-AC-8_Autocannon_Sentry"
     ],
     "zap": [
       "Reinforce",
@@ -43,8 +45,8 @@
       "A-ARC-3_Tesla_Tower",
       "NUX-223_Hellbomb",
       "EXO-49_Emancipator_Exosuit",
-      "A-M-23_EMS_Mortar_Sentry",
-      "GR-8_Recoilless_Rifle"
+      "MD-8_Gas_Mines",
+      "Orbital_Napalm_Barrage"
     ],
     "gas": [
       "Reinforce",
@@ -52,10 +54,11 @@
       "MD-8_Gas_Mines",
       "Orbital_Gas_Strike",
       "AX-TX-13_Guard_Dog_Dog_Breath",
-      "TX-14_Sterilizer",
       "FLAM-40_Flamethrower",
       "S-11_Speargun",
-      "B-1_Supply_Pack"
+      "A-G-16_Gatling_Sentry",
+      "M-1000_Maxigun",
+      "AX-FLAM-75_Guard_Dog_Hot_dog"
     ],
     "bug caves": [
       "Reinforce",
@@ -68,6 +71,14 @@
       "Orbital_Napalm_Barrage",
       "Orbital_Laser",
       "A-G-16_Gatling_Sentry"
+    ],
+    "bots defense": [
+      "Reinforce",
+      "Resupply",
+      "GR-8_Recoilless_Rifle",
+      "A-MLS-4X_Rocket_Sentry",
+      "A-AC-8_Autocannon_Sentry",
+      "Orbital_Napalm_Barrage"
     ]
   },
   "user2": {
@@ -195,13 +206,10 @@
       "Reinforce",
       "Resupply",
       "Orbital_EMS_Strike",
-      "AX-TX-13_Guard_Dog_Dog_Breath",
       "A-ARC-3_Tesla_Tower",
       "GL-52_De-Escalator",
-      "AX-AR-23_Guard_Dog",
       "A-M-23_EMS_Mortar_Sentry",
-      "SH-32_Shield_Generator_Pack",
-      "B-1_Supply_Pack"
+      "SH-32_Shield_Generator_Pack"
     ],
     "cred farming": [
       "Reinforce",
@@ -214,13 +222,33 @@
       "Orbital_Laser",
       "APW-1_Anti-Materiel_Rifle"
     ],
-    "squid defense": [
+    "anti squeater": [
       "Reinforce",
       "Resupply",
       "Orbital_Gatling_Barrage",
       "Eagle_Cluster_Bomb",
       "AC-8_Autocannon",
       "A-MLS-4X_Rocket_Sentry"
+    ],
+    "glizzy": [
+      "Reinforce",
+      "Resupply",
+      "Orbital_Gas_Strike",
+      "FLAM-40_Flamethrower",
+      "AX-FLAM-75_Guard_Dog_Hot_dog",
+      "MD-8_Gas_Mines"
+    ],
+    "boots": [
+      "Reinforce",
+      "Resupply",
+      "Eagle_Rearm",
+      "NUX-223_Hellbomb",
+      "GR-8_Recoilless_Rifle",
+      "Eagle_500KG_Bomb",
+      "Orbital_Gatling_Barrage",
+      "A-MLS-4X_Rocket_Sentry",
+      "EAT-17_Expendable_Anti-Tank",
+      "Orbital_Laser"
     ]
   }
 }
