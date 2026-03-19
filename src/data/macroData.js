@@ -33,6 +33,7 @@ export const DYNAMIC_MACROS = {
   'GL-52_De-Escalator': 'GL-52 De-Escalator',
   'TX-14_Sterilizer': 'TX-14 Sterilizer',
   'FLAM-40_Flamethrower': 'FLAM-40 Flamethrower',
+  'B-FLAM-80_Cremator': 'B/FLAM-80 Cremator',
   'LAS-98_Laser_Cannon': 'LAS-98 Laser Cannon',
   'LAS-99_Quasar_Cannon': 'LAS-99 Quasar Cannon',
   'PLAS-45_Epoch': 'PLAS-45 Epoch',
@@ -75,6 +76,7 @@ export const DYNAMIC_MACROS = {
   'A-AC-8_Autocannon_Sentry': 'A/AC-8 Autocannon Sentry',
   'A-M-23_EMS_Mortar_Sentry': 'A/M-23 EMS Mortar Sentry',
   'A-M-12_Mortar_Sentry': 'A/M-12 Mortar Sentry',
+  'A-GM-17_Gas_Mortar_Sentry': 'A/GM-17 Gas Mortar Sentry',
   'FX-12_Shield_Generator_Relay': 'FX-12 Shield Generator Relay',
   'E-GL-21_Grenadier_Battlement': 'E/GL-21 Grenadier Battlement',
   'E-AT-12_Anti-Tank_Emplacement': 'E/AT-12 Anti-Tank Emplacement',
@@ -189,7 +191,9 @@ export const MACRO_IMAGES = {
   'GL-28_Belt-Fed_Grenade_Launcher': 'gl-28.webp',
   'EAT-411_Leveller': 'eat-411.webp',
   'B-MD_C4_Pack': 'c4.webp',
-  'TD-220_Bastion': 'bastion.webp'
+  'TD-220_Bastion': 'bastion.webp',
+  'B-FLAM-80_Cremator': 'cremator.webp',
+  'A-GM-17_Gas_Mortar_Sentry': 'gas-mortar-sentry.webp',
 }
 
 export const MACRO_STYLES = {
@@ -292,7 +296,10 @@ export const MACRO_STYLES = {
   'CQC-20_Breaching_Hammer': { border: 'blue' },
   'GL-28_Belt-Fed_Grenade_Launcher': { border: 'blue' },
   'EAT-411_Leveller': { border: 'blue' },
-  'TD-220_Bastion': { border: 'blue' }
+  'TD-220_Bastion': { border: 'blue' },
+  //Entrenched Dividion
+  'B-FLAM-80_Cremator': { border: 'blue' },
+  'A-GM-17_Gas_Mortar_Sentry': { border: 'green' }
 }
 
 // Create reverse mapping: icon filename (without .webp) → macro key

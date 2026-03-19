@@ -79,6 +79,25 @@
       "A-MLS-4X_Rocket_Sentry",
       "A-AC-8_Autocannon_Sentry",
       "Orbital_Napalm_Barrage"
+    ],
+    "grenada": [
+      "Reinforce",
+      "Resupply",
+      "NUX-223_Hellbomb",
+      "GL-21_Grenade_Launcher",
+      "B-1_Supply_Pack",
+      "A-G-16_Gatling_Sentry",
+      "MD-8_Gas_Mines",
+      "EXO-49_Emancipator_Exosuit"
+    ],
+    "boomhammer": [
+      "Reinforce",
+      "Resupply",
+      "NUX-223_Hellbomb",
+      "CQC-20_Breaching_Hammer",
+      "LIFT-182_Warp_Pack",
+      "A-MLS-4X_Rocket_Sentry",
+      "Orbital_Napalm_Barrage"
     ]
   },
   "user2": {
@@ -249,6 +268,23 @@
       "A-MLS-4X_Rocket_Sentry",
       "EAT-17_Expendable_Anti-Tank",
       "Orbital_Laser"
+    ],
+    "boom": [
+      "Reinforce",
+      "Resupply",
+      "EAT-411_Leveller",
+      "B-1_Supply_Pack",
+      "A-MLS-4X_Rocket_Sentry",
+      "Orbital_Laser",
+      "Orbital_Napalm_Barrage"
+    ],
+    "standard": [
+      "Reinforce",
+      "Resupply",
+      "GL-21_Grenade_Launcher",
+      "B-1_Supply_Pack",
+      "MD-8_Gas_Mines",
+      "A-MG-43_Machine_Gun_Sentry"
     ]
   }
 }
