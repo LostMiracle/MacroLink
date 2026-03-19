@@ -57,21 +57,6 @@ def dashboard_view():
 def settings_view():
     return send_from_directory('dist', 'index.html')
 
-# Old server-side dashboard route (deprecated)
-# @app.route("/dashboard")
-# def dashboard():
-#     image_dir = Path(app.static_folder) / "images"
-#     existing_images = [f.name for f in image_dir.glob("*.png")]
-#     return render_template(
-#         "dashboard.html",
-#         static_macros=STATIC_MACROS,
-#         dynamic_macros=DYNAMIC_MACROS,
-#         normalized_macros=NORMALIZED_MACROS,
-#         macro_images=MACRO_IMAGES,
-#         macro_styles=MACRO_STYLES,
-#         image_files=existing_images
-#     )
-
 PICO_IPS = {
     "green": "http://192.168.50.34:8888",
     "blue": "http://192.168.50.35:8888"
