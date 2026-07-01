@@ -26,6 +26,7 @@ export const DYNAMIC_MACROS = {
   'MG-43_Machine_Gun': 'MG-43 Machine Gun',
   'M-105_Stalwart': 'M-105 Stalwart',
   'MG-206_Heavy_Machine_Gun': 'MG-206 Heavy Machine Gun',
+  'MGX-42_Bullet_Storm': 'MGX-42 Bullet Storm',
   'RS-422_Railgun': 'RS-422 Railgun',
   'APW-1_Anti-Materiel_Rifle': 'APW-1 Anti-Materiel Rifle',
   'GL-21_Grenade_Launcher': 'GL-21 Grenade Launcher',
@@ -65,7 +66,11 @@ export const DYNAMIC_MACROS = {
   'AX-TX-13_Guard_Dog_Dog_Breath': "AX/TX-13 'Guard Dog' Dog Breath",
   'AX_ARC-3_Guard_Dog_K9': "AX/ARC-3 'Guard Dog' K9",
   'M-102_Fast_Recon_Vehicle': 'M-102 Fast Recon Vehicle',
+  'M-103_Supply_FRV': 'M-103 Supply FRV',
+  'M-104_Incinerator_FRV': 'M-104 Incinerator FRV',
   'TD-220_Bastion': 'TD-220 Bastion',
+  'EXO-51_Lumberer_Exosuit': 'EXO-51 Lumberer Exosuit',
+  'EXO-55_Breakthrough_Exosuit': 'EXO-55 Breakthrough Exosuit',
   'EXO-49_Emancipator_Exosuit': 'EXO-49 Emancipator Exosuit',
   'EXO-45_Patriot_Exosuit': 'EXO-45 Patriot Exosuit',
   'A-G-16_Gatling_Sentry': 'A/G-16 Gatling Sentry',
@@ -194,6 +199,11 @@ export const MACRO_IMAGES = {
   'TD-220_Bastion': 'bastion.webp',
   'B-FLAM-80_Cremator': 'cremator.webp',
   'A-GM-17_Gas_Mortar_Sentry': 'gas-mortar-sentry.webp',
+  'EXO-51_Lumberer_Exosuit': 'lumberer.webp',
+  'EXO-55_Breakthrough_Exosuit': 'breakthrough.webp',
+  'MGX-42_Bullet_Storm': 'bulletstorm.webp',
+  'M-103_Supply_FRV': 'nyi.webp', // TODO: Add Supply FRV image
+  'M-104_Incinerator_FRV': 'nyi.webp', // TODO: Add Incinerator FRV image
 }
 
 export const MACRO_STYLES = {
@@ -246,6 +256,8 @@ export const MACRO_STYLES = {
   'AX-LAS-5_Guard_Dog_Rover': { border: 'blue' },
   'AX-TX-13_Guard_Dog_Dog_Breath': { border: 'blue' },
   'M-102_Fast_Recon_Vehicle': { border: 'blue' },
+  'M-103_Supply_FRV': { border: 'blue' },
+  'M-104_Incinerator_FRV': { border: 'blue' },
   'EXO-49_Emancipator_Exosuit': { border: 'blue' },
   'EXO-45_Patriot_Exosuit': { border: 'blue' },
   'A-G-16_Gatling_Sentry': { border: 'green' },
@@ -297,9 +309,13 @@ export const MACRO_STYLES = {
   'GL-28_Belt-Fed_Grenade_Launcher': { border: 'blue' },
   'EAT-411_Leveller': { border: 'blue' },
   'TD-220_Bastion': { border: 'blue' },
-  //Entrenched Dividion
+  //Entrenched Division
   'B-FLAM-80_Cremator': { border: 'blue' },
-  'A-GM-17_Gas_Mortar_Sentry': { border: 'green' }
+  'A-GM-17_Gas_Mortar_Sentry': { border: 'green' },
+  //Exo Experts
+  'EXO-51_Lumberer_Exosuit': { border: 'blue' },
+  'EXO-55_Breakthrough_Exosuit': { border: 'blue' },
+  'MGX-42_Bullet_Storm': { border: 'blue' },
 }
 
 // Create reverse mapping: icon filename (without .webp) → macro key
