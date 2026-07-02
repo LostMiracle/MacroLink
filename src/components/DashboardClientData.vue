@@ -33,24 +33,15 @@ const clientData = computed(() => {
     const data = props.client.data
 
     return {
-        safe_mode: data.safe_mode ?? 'N/A',
-        filesystem: data.filesystem ?? 'N/A',
-        usb_mode: data.usb_mode ?? 'N/A',
         version: data.version ?? 'N/A',
-        rssi: data.rssi ?? 'N/A',
         ip: data.ip ?? 'N/A',
         mac: data.mac ?? 'N/A',
         http_requests: data.http_requests ?? 'N/A',
-        cpu_temp: data.cpu_temp ? `${data.cpu_temp.toFixed(1)}°C` : 'N/A',
         uptime: formatUptime(data.uptime),
         last_recovery: data.last_server_recovery
             ? `${formatUptime(data.uptime - data.last_server_recovery)} ago`
             : 'none',
-        memory_used: formatBytes(data.memory?.used),
         memory_free: formatBytes(data.memory),
-        memory_used_percentage: data.memory?.percent_used
-            ? `${data.memory.percent_used.toFixed(1)}%`
-            : 'N/A',
         last_macro_ts: data.last_macro_ts !== null
             ? `${formatUptime(data.uptime - data.last_macro_ts)} ago`
             : 'never',
@@ -105,28 +96,6 @@ const macroComparison = computed(() => {
         <div class="grid grid-cols-4 gap-2 text-tiny">
             <div>
                 <div class="flex flex-col">
-                    <span class="text-neutral-400 text-xs">SAFE MODE</span>
-                    <span class="text-white font-mono">{{ clientData.safe_mode }}</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-neutral-400 text-xs">FILESYSTEM</span>
-                    <span class="text-white font-mono">{{ clientData.filesystem }}</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-neutral-400 text-xs">USB MODE</span>
-                    <span class="text-white font-mono">{{ clientData.usb_mode }}</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-neutral-400 text-xs">VERSION</span>
-                    <span class="text-white font-mono">{{ clientData.version }}</span>
-                </div>
-            </div>
-            <div>
-                <div class="flex flex-col">
-                    <span class="text-neutral-400 text-xs">RSSI</span>
-                    <span class="text-white font-mono">{{ clientData.rssi }}</span>
-                </div>
-                <div class="flex flex-col">
                     <span class="text-neutral-400 text-xs">IP ADDRESS</span>
                     <span class="text-white font-mono">{{ clientData.ip }}</span>
                 </div>
@@ -134,37 +103,28 @@ const macroComparison = computed(() => {
                     <span class="text-neutral-400 text-xs">MAC ADDRESS</span>
                     <span class="text-white font-mono">{{ clientData.mac }}</span>
                 </div>
+            </div>
+            <div>
+                <div class="flex flex-col">
+                    <span class="text-neutral-400 text-xs">VERSION</span>
+                    <span class="text-white font-mono">{{ clientData.version }}</span>
+                </div>
                 <div class="flex flex-col">
                     <span class="text-neutral-400 text-xs">HTTP REQUESTS</span>
                     <span class="text-white font-mono">{{ clientData.http_requests }}</span>
                 </div>
             </div>
+
             <div>
-                <div class="flex flex-col">
-                    <span class="text-neutral-400 text-xs">CPU TEMP</span>
-                    <span class="text-white font-mono">{{ clientData.cpu_temp }}</span>
-                </div>
                 <div class="flex flex-col">
                     <span class="text-neutral-400 text-xs">UPTIME</span>
                     <span class="text-white font-mono">{{ clientData.uptime }}</span>
                 </div>
-                <div class="flex flex-col">
-                    <span class="text-neutral-400 text-xs">LAST RECOVERY</span>
-                    <span class="text-white font-mono">{{ clientData.last_recovery }}</span>
-                </div>
             </div>
             <div>
                 <div class="flex flex-col">
-                    <span class="text-neutral-400 text-xs">MEMORY USED</span>
-                    <span class="text-white font-mono">{{ clientData.memory_used }}</span>
-                </div>
-                <div class="flex flex-col">
                     <span class="text-neutral-400 text-xs">MEMORY FREE</span>
                     <span class="text-white font-mono">{{ clientData.memory_free }}</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-neutral-400 text-xs">MEMORY % USED</span>
-                    <span class="text-white font-mono">{{ clientData.memory_used_percentage }}</span>
                 </div>
             </div>
         </div>
